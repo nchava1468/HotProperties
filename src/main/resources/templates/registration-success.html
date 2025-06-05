@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Success - HotProperties</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: url('/images/house-bg.png') no-repeat center center fixed;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .success-container {
+            background-color: rgba(255, 255, 255, 0.96);
+            padding: 50px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .success-container h1 {
+            color: #28a745;
+            font-size: 2rem;
+        }
+
+        .success-container p {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .success-container a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .success-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="success-container">
+    <h1>🎉 Registration Successful!</h1>
+    <p>Your account has been created. You can now log in to access your dashboard.</p>
+    <a th:href="@{/login}">Go to Login</a>
+</div>
+</body>
+</html>
