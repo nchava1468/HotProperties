@@ -1,4 +1,5 @@
 package com.hotproperties.hotproperties.util;
+
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
 import org.apache.commons.csv.CSVFormat;
@@ -23,7 +24,6 @@ public class PropertyCsvLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-
         try (
                 InputStreamReader reader = new InputStreamReader(
                         new ClassPathResource("homedata.csv").getInputStream(), StandardCharsets.UTF_8);
@@ -41,16 +41,15 @@ public class PropertyCsvLoader implements CommandLineRunner {
                     repository.save(property);
 
                 } catch (Exception e) {
-                    System.err.println(record.getRecordNumber());
+                    System.err.println(" Record " + record.getRecordNumber() + " failed:");
                     e.printStackTrace();
                 }
             }
 
-
-            System.out.println("✅ CSV import complete!");
+            System.out.println(" CSV import complete!");
 
         } catch (Exception e) {
-            System.err.println("❌ Error loading CSV file!");
+            System.err.println(" Error loading CSV file!");
             e.printStackTrace();
         }
     }

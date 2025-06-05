@@ -1,80 +1,47 @@
-<!-- register.html -->
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Register - HotProperties</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: url('/images/house-bg.png') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .register-box {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 350px;
-        }
-
-        input[type="text"], input[type="password"], select {
-            padding: 10px;
-            margin: 10px 0;
-            width: 100%;
-            font-size: 1rem;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .message {
-            margin-top: 10px;
-            color: red;
-        }
-    </style>
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/css/register.css}"/>
 </head>
 <body>
-<div class="register-box">
-    <h2>Create Account</h2>
-    <form th:action="@{/auth/register}" method="post">
-        <input type="text" name="username" placeholder="Username" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <input type="password" name="confirmPassword" placeholder="Confirm Password" required />
+<div class="container">
+    <h1>Create Account</h1>
+    <div class="error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+    <div class="success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <form method="post" th:action="@{/register}" th:object="${user}" enctype="multipart/form-data">
 
-        <select name="role" required>
-            <option value="" disabled selected>Select Role</option>
-            <option value="BUYER">Buyer</option>
-            <option value="AGENT">Agent</option>
-            <option value="ADMIN">Admin</option>
-        </select>
+        <label for="username">Username</label>
+        <input id="username" required="" th:field="*{username}" type="text"/>
 
-        <button type="submit">Register</button>
+        <label for="password">Password</label>
+        <input id="password" required="" th:field="*{password}" type="password"/>
+
+        <label for="firstName">First Name</label>
+        <input id="firstName" required="" th:field="*{firstName}" type="text"/>
+
+        <label for="lastName">Last Name</label>
+        <input id="lastName" required="" th:field="*{lastName}" type="text"/>
+
+        <label for="email">Email</label>
+        <input id="email" required="" th:field="*{email}" type="email"/>
+
+        <label for="profilePicture">Profile Picture</label>
+        <input id="profilePicture" type="file" name="file" accept="image/*"/>
+
+        <br/><br/>
+        <label>Roles</label>
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="selectedRoles" value="ROLE_USER" /> User</label>
+            <label><input type="checkbox" name="selectedRoles" value="ROLE_MANAGER" /> Manager</label>
+            <label><input type="checkbox" name="selectedRoles" value="ROLE_ADMIN" /> Admin</label>
+        </div>
+        <button class="submit-btn" type="submit">Register</button>
     </form>
-
-    <div th:if="${error}" class="message" th:text="${error}"></div>
-    <div th:if="${success}" class="message" style="color: green;" th:text="${success}"></div>
+    <div class="back-link">
+        <a th:href="@{/login}">← Back to Login</a>
+    </div>
 </div>
 </body>
 </html>
