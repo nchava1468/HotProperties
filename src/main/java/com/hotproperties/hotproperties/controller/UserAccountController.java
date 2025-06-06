@@ -3,6 +3,7 @@ package com.hotproperties.hotproperties.controller;
 import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.service.AuthService;
 import com.hotproperties.hotproperties.service.UserService;
+import com.hotproperties.hotproperties.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.Resource;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -25,10 +27,12 @@ public class UserAccountController {
 
     private final AuthService authService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserAccountController(AuthService authService, UserService userService) {
+    public UserAccountController(AuthService authService, UserService userService, UserRepository userRepository) {
         this.authService = authService;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping({"/", "/index"})
@@ -50,7 +54,12 @@ public class UserAccountController {
         try {
             Cookie jwtCookie = authService.loginAndCreateJwtCookie(user);
             response.addCookie(jwtCookie);
-            return "redirect:/dashboard";
+            String role = userService.getRoleForUser(user.getUsername()); // create a helper to get role
+            if ("ROLE_ADMIN".equals(role)) {
+                return "redirect:/admin/dashboard";
+            } else {
+                return "redirect:/dashboard";
+            }
         } catch (BadCredentialsException e) {
             model.addAttribute("error", "Invalid username or password");
             return "login";
@@ -62,76 +71,6 @@ public class UserAccountController {
     public String logout(HttpServletResponse response) {
         authService.clearJwtCookie(response);
         return "redirect:/login";
-    }
-
-    // === DASHBOARD / PROFILE / SETTINGS ===
-    @GetMapping("/dashboard")
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
-    public String showDashboard(Model model) {
-        userService.prepareDashboardModel(model);
-        return "dashboard";
-    }
-
-    @GetMapping("/profile")
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
-    public String showProfile(Model model) {
-        userService.prepareProfileModel(model);
-        return "profile";
-    }
-
-    @GetMapping("/settings")
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
-    public String showSettings(Model model) {
-        userService.prepareSettingsModel(model);
-        return "account_settings";
-    }
-
-    @PostMapping("/settings")
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
-    public String updateSettings(@ModelAttribute("user") User updatedUser,
-                                        @RequestParam(required = false) String password,
-                                        @RequestParam(required = false) List<Long> addIds,
-                                        @RequestParam(required = false) List<Long> removeIds,
-                                        @RequestParam(value = "file", required = false) MultipartFile file,
-                                        RedirectAttributes redirectAttributes) {
-        try {
-            // Look up the real user so we get the correct ID
-            User actualUser = userService.getCurrentUser();
-
-            // Copy updates from form-bound user
-            actualUser.setFirstName(updatedUser.getFirstName());
-            actualUser.setLastName(updatedUser.getLastName());
-            actualUser.setEmail(updatedUser.getEmail());
-
-            userService.updateUserSettings(actualUser, password, addIds, removeIds);
-
-            // Save profile picture if provided
-            if (file != null && !file.isEmpty()) {
-                String filename = userService.storeProfilePicture(actualUser.getId(), file);
-                actualUser.setProfilePicture(filename);
-                userService.updateUser(actualUser);
-            }
-
-            redirectAttributes.addFlashAttribute("successMessage", "Account updated successfully.");
-        } catch (Exception ex) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update account: " + ex.getMessage());
-        }
-        return "redirect:/settings";
-    }
-
-    // === ADMIN + MANAGER VIEWS ===
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/users")
-    public String viewAllUsers(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
-        return "all_users";
-    }
-
-    @PreAuthorize("hasRole('MANAGER')")
-    @GetMapping("/manager/team")
-    public String showMyTeam(Model model) {
-        model.addAttribute("team", userService.getTeamForCurrentManager());
-        return "my_team";
     }
 
     // === REGISTRATION ===
@@ -167,41 +106,6 @@ public class UserAccountController {
         }
     }
 
-
-
-    // === PROFILE PICTURE UPLOAD ===
-    @PostMapping("/users/{id}/upload-profile-picture")
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
-    public String uploadProfilePicture(@PathVariable Long id,
-                                       @RequestParam("file") MultipartFile file,
-                                       RedirectAttributes redirectAttributes) {
-        try {
-            String filename = userService.storeProfilePicture(id, file);
-            redirectAttributes.addFlashAttribute("message", "Profile picture uploaded: " + filename);
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Upload failed: " + e.getMessage());
-        }
-        return "redirect:/profile";
-    }
-
-    @GetMapping("/profile-pictures/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> serveProfilePicture(@PathVariable String filename) {
-        try {
-            Path filePath = Paths.get("uploads/profile-pictures/").resolve(filename).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists() && resource.isReadable()) {
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
-                        .contentType(MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM))
-                        .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+    //
 
 }

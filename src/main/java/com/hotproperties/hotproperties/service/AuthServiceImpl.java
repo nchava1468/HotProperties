@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
-        cookie.setSecure(true); // only if your app uses HTTPS
+        cookie.setSecure(false); // Set to false for local development
         response.addCookie(cookie);
     }
 

@@ -29,7 +29,37 @@ public class DataInitializer {
 
     @PostConstruct
     public void init() {
-        if (userRepository.count() == 0 && roleRepository.count() == 0) {
+        // Always create roles if they don't exist
+        if (roleRepository.count() == 0) {
+            Role roleUser = new Role("ROLE_USER");
+            Role roleAdmin = new Role("ROLE_ADMIN");
+            Role roleManager = new Role("ROLE_MANAGER");
+
+            roleRepository.save(roleUser);
+            roleRepository.save(roleAdmin);
+            roleRepository.save(roleManager);
+            System.out.println("🟢 Initial roles inserted.");
+        }
+
+        // Check if admin user exists
+        if (!userRepository.findByUsername("admin").isPresent()) {
+            Role roleAdmin = roleRepository.findByName("ROLE_ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Admin role not found"));
+
+            User admin = new User("admin",
+                    passwordEncoder.encode("admin123"),
+                    "Admin",
+                    "User",
+                    "admin@hotproperties.com",
+                    Set.of(roleAdmin),
+                    "admin.jpg");
+
+            userRepository.save(admin);
+            System.out.println("🟢 Admin user created.");
+        }
+
+        // Create other users only if no users exist
+        if (userRepository.count() == 0) {
             Role roleUser = new Role("ROLE_USER");
             Role roleAdmin = new Role("ROLE_ADMIN");
             Role roleManager = new Role("ROLE_MANAGER");
@@ -118,7 +148,6 @@ public class DataInitializer {
                     Set.of(roleAdmin),
                     "image10.jpg");
 
-
             u7.addEmployee(u1);
             u7.addEmployee(u2);
             u8.addEmployee(u3);
@@ -127,8 +156,7 @@ public class DataInitializer {
             u9.addEmployee(u6);
 
             userRepository.saveAll(List.of(u1, u2, u3, u4, u5, u6, u7, u8, u9, u10));
-
-            System.out.println("🟢 Initial users and roles inserted.");
+            System.out.println("🟢 Initial users inserted.");
         } else {
             System.out.println("🟡 Users and roles already exist, skipping initialization.");
         }

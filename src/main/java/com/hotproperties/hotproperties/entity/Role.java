@@ -1,7 +1,7 @@
 package com.hotproperties.hotproperties.entity;
 
 import jakarta.persistence.*;
-
+import com.hotproperties.hotproperties.entity.User;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +17,7 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<com.hotproperties.hotproperties.entity.User> users = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     // --- Constructors ---
     public Role() {}

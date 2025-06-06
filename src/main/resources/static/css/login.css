@@ -114,9 +114,9 @@ ul li {
 }
 
 table {
-    border-spacing: 0 12px; /* vertical spacing between rows */
+    border-spacing: 0 12px;
 
-        border-collapse: collapse; /* ✅ ensures borders align */
+        border-collapse: collapse;
         width: 100%;
 }
 

@@ -35,4 +35,10 @@ public interface UserService {
 
     @PreAuthorize("isAuthenticated()")
     User getCurrentUser();
+
+    String getRoleForUser(String username);
+
+    void deleteUserById(Long id);
+
+    boolean existsByUsername(String username);
 }

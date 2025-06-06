@@ -110,6 +110,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerNewUser(User user, List<String> roleNames) {
+        if (user.getUsername() == null || user.getUsername().isBlank()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+
         Set<Role> roles = roleNames.stream()
                 .map(roleName -> roleRepository.findByName(roleName)
                         .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
@@ -117,9 +121,9 @@ public class UserServiceImpl implements UserService {
 
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return user;
+        return userRepository.save(user);
     }
+
 
     @Override
     public List<User> getAllUsers() {
@@ -175,5 +179,25 @@ public class UserServiceImpl implements UserService {
         String username = auth.getName();
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    }
+
+    @Override
+    public String getRoleForUser(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        return user.getRoles().stream()
+                .map(Role::getName)
+                .findFirst()
+                .orElse("ROLE_USER");
+    }
+
+    @Override
+    public void deleteUserById(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }
