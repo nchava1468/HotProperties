@@ -1,7 +1,7 @@
 package com.hotproperties.hotproperties.entity;
 
 import jakarta.persistence.*;
-import com.hotproperties.hotproperties.entity.User;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,9 +44,9 @@ public class Role {
 
     public void setName(String name) { this.name = name; }
 
-    public Set<com.hotproperties.hotproperties.entity.User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(Set<com.hotproperties.hotproperties.entity.User> users) { this.users = users; }
+    public void setUsers(Set<User> users) { this.users = users; }
 }

@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         model.addAttribute("user", context.user());
         model.addAttribute("authorization", context.auth());
     }
-
+/*
     @Override
     public void prepareProfileModel(Model model) {
         model.addAttribute("user", getCurrentUserContext().user());
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(user);
-    }
+    }*/
 
     @Override
     public User registerNewUser(User user, List<String> roleNames) {
@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userRepository.findAllByOrderByLastNameAsc();
     }
-
+/*
     @Override
     public List<User> getTeamForCurrentManager() {
         return userRepository.findByManager(getCurrentUserContext().user());
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to store profile picture", ex);
         }
     }
-
+*/
 
     @Override
     public void updateUser(User savedUser) {

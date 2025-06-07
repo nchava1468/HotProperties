@@ -10,23 +10,25 @@ public class Property {
     private Long id;
 
     private String title;
+
     private double price;
-    private String location;
-    private int size;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String location;
+
+    private Integer size;
+
     public Property() {}
 
-    public Property(String title, String location, double price, int size, String description) {
+    public Property(String title, double price, String description, String location, Integer size) {
         this.title = title;
         this.location = location;
         this.price = price;
         this.size = size;
         this.description = description;
     }
-
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

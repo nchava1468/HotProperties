@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Only skip JWT validation for public resources and login/register
         if (path.startsWith("/css") || path.startsWith("/images") || 
-            path.equals("/login") || path.equals("/register") || 
+            path.equals("/login") || path.equals("/register") ||
             path.equals("/") || path.equals("/index")) {
             filterChain.doFilter(request, response);
             return;

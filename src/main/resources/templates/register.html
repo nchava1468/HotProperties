@@ -10,7 +10,7 @@
     <h1>Create Account</h1>
     <div class="error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
     <div class="success" th:if="${successMessage}" th:text="${successMessage}"></div>
-    <form method="post" th:action="@{/register}" th:object="${user}" enctype="multipart/form-data">
+    <form method="post" th:action="@{/auth/register}" th:object="${user}" enctype="multipart/form-data">
 
         <label for="username">Username</label>
         <input id="username" required="" th:field="*{username}" type="text"/>
@@ -27,20 +27,18 @@
         <label for="email">Email</label>
         <input id="email" required="" th:field="*{email}" type="email"/>
 
-        <label for="profilePicture">Profile Picture</label>
-        <input id="profilePicture" type="file" name="file" accept="image/*"/>
-
         <br/><br/>
+
         <label>Roles</label>
         <div class="checkbox-group">
-            <label><input type="checkbox" name="selectedRoles" value="ROLE_USER" /> User</label>
-            <label><input type="checkbox" name="selectedRoles" value="ROLE_MANAGER" /> Manager</label>
-            <label><input type="checkbox" name="selectedRoles" value="ROLE_ADMIN" /> Admin</label>
+            <label><input type="checkbox" checked disabled /> User </label>
+            <input type="hidden" name="selectedRoles" value="ROLE_BUYER" />
         </div>
+
         <button class="submit-btn" type="submit">Register</button>
     </form>
     <div class="back-link">
-        <a th:href="@{/login}">← Back to Login</a>
+        <a th:href="@{/auth/login}">← Back to Login</a>
     </div>
 </div>
 </body>

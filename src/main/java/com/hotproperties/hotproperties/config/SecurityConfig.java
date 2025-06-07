@@ -49,11 +49,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/", "/index", "/auth/**").permitAll()
+                        //.requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/favicon.ico", "/error").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/", "/index", "/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
 
                         .anyRequest().authenticated()
                 )
