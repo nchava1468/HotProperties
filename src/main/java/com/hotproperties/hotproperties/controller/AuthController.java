@@ -84,8 +84,9 @@ public class AuthController {
 
     @PostMapping("/auth/logout")
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
-    public String logout(HttpServletResponse response) {
+    public String logout(HttpServletResponse response, RedirectAttributes redirectAttributes) {
         authService.clearJwtCookie(response);
+        redirectAttributes.addFlashAttribute("logoutMessage", "You have successfully logged out.");
         return "redirect:/auth/login";
     }
 }

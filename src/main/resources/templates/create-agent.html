@@ -8,17 +8,15 @@
 <body>
 <div class="header">
     <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
-    <a th:href="@{/admin/dashboard}" class="dashboard-btn">&#8592; Dashboard</a>
+    <a th:href="@{/dashboard}" class="dashboard-btn">&#8592; Dashboard</a>
 </div>
 <div class="main-bg">
     <div class="card">
         <h2>Create a New Agent</h2>
         
+        <div class="error-message" th:if="${error}" th:text="${error}"></div>
 
-        <div th:if="${error}" class="error-message" th:text="${error}"></div>
-        
-
-        <div th:if="${success}" class="success-message" th:text="${success}"></div>
+        <div class="success-message" th:if="${success}" th:text="${success}"></div>
 
         <form th:action="@{/admin/create-agent}" th:object="${agent}" method="post">
             <div class="form-group">
@@ -40,7 +38,7 @@
             
             <div class="form-group">
                 <input type="password" th:field="*{password}" placeholder="Password" required/>
-                <small class="form-text">Password must be at least 6 characters long</small>
+                <small class="form-text">Password should be at least 6 characters long</small>
             </div>
             
             <button type="submit" class="create-btn">Create Agent</button>
@@ -48,35 +46,5 @@
     </div>
 </div>
 
-<style>
-    .error-message {
-        background-color: #ffebee;
-        color: #c62828;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 4px;
-        border: 1px solid #ef9a9a;
-    }
-
-    .success-message {
-        background-color: #e8f5e9;
-        color: #2e7d32;
-        padding: 10px;
-        margin: 10px 0;
-        border-radius: 4px;
-        border: 1px solid #a5d6a7;
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-text {
-        display: block;
-        margin-top: 5px;
-        font-size: 0.875em;
-        color: #666;
-    }
-</style>
 </body>
 </html> 

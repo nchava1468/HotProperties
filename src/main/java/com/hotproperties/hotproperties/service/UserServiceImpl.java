@@ -5,6 +5,7 @@ import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.repository.RoleRepository;
 import com.hotproperties.hotproperties.repository.UserRepository;
 import com.hotproperties.hotproperties.util.CurrentUserContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -106,7 +108,7 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.save(user);
-    }*/
+    }
 
     @Override
     public User registerNewUser(User user, List<String> roleNames) {
@@ -122,7 +124,26 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }*/
+
+    public User registerNewUser(User user, List<String> roles) {
+
+        validateUsername(user.getUsername());
+        validatePassword(user.getPassword());
+        validateFirstName(user.getFirstName());
+        validateLastName(user.getLastName());
+        validateEmail(user.getEmail());
+        validateRoles(roles);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(roles.stream()
+                .map(role -> roleRepository.findByName(role)
+                        .orElseThrow(() -> new IllegalArgumentException("Invalid role: " + role)))
+                .collect(Collectors.toSet()));
+
+        return userRepository.save(user);
     }
+
 
 
     @Override
@@ -200,4 +221,72 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+/*
+    @Override
+    public void createNewAgent(User agent) {
+        if (agent.getUsername() == null || agent.getUsername().trim().isEmpty()) {
+            throw new IllegalArgumentException("Username is required");
+        }
+
+        if (agent.getPassword() == null || agent.getPassword().trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+
+        if (agent.getEmail() == null || agent.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+
+        if (agent.getFirstName() == null || agent.getFirstName().trim().isEmpty()) {
+            throw new IllegalArgumentException("First name is required");
+        }
+
+        if (agent.getLastName() == null || agent.getLastName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name is required");
+        }
+
+        if (existsByUsername(agent.getUsername())) {
+            throw new IllegalArgumentException("Username already exists");
+        }
+
+        registerNewUser(agent, List.of("ROLE_AGENT"));
+    }*/
+
+    // === VALIDATION METHODS ===
+
+    private void validateUsername(String username) {
+        if (username == null || username.trim().isEmpty() || userRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Username is required and must be unique");
+        }
+    }
+
+    private void validatePassword(String password) {
+        if (password == null || password.trim().isEmpty()) {
+            throw new IllegalArgumentException("Password is required");
+        }
+    }
+
+    private void validateFirstName(String firstName) {
+        if (firstName == null || firstName.trim().isEmpty()) {
+            throw new IllegalArgumentException("First name is required");
+        }
+    }
+
+    private void validateLastName(String lastName) {
+        if (lastName == null || lastName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Last name is required");
+        }
+    }
+
+    private void validateEmail(String email) {
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+    }
+
+    private void validateRoles(List<String> roles) {
+        if (roles == null || roles.size() != 1) {
+            throw new IllegalArgumentException("Exactly one role must be assigned");
+        }
+    }
+
 }

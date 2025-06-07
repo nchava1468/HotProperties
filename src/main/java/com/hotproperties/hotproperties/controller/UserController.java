@@ -53,7 +53,7 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete-user/{id}")
+    @PostMapping("/admin/delete-user/{id}")
     public String deleteUser(@PathVariable Long id,
                              RedirectAttributes redirectAttributes) {
         try {
@@ -70,7 +70,7 @@ public class UserController {
         model.addAttribute("agent", new User());
         return "create-agent";
     }
-
+/*
     @PostMapping("/admin/create-agent")
     public String createAgent(@ModelAttribute("agent") User agent,
                               RedirectAttributes redirectAttributes) {
@@ -108,14 +108,31 @@ public class UserController {
             }
 
             // Create the agent
-            userService.registerNewUser(agent, java.util.List.of("ROLE_MANAGER"));
+            userService.registerNewUser(agent, java.util.List.of("ROLE_AGENT"));
             redirectAttributes.addFlashAttribute("success", "Agent created successfully!");
-            return "redirect:/admin/dashboard";
+            return "redirect:/dashboard";
 
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error creating agent: " + e.getMessage());
             return "redirect:/admin/create-agent";
         }
+    }*/
+    @PostMapping("/admin/create-agent")
+    public String createAgent(@ModelAttribute("agent") User agent,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            userService.registerNewUser(agent, List.of("ROLE_AGENT"));
+            redirectAttributes.addFlashAttribute("success", "Agent created successfully!");
+            return "redirect:/dashboard";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/admin/create-agent";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error creating agent: " + e.getMessage());
+            return "redirect:/admin/create-agent";
+        }
     }
+
+
 
 }

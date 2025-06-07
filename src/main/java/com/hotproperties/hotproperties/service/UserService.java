@@ -41,4 +41,6 @@ public interface UserService {
     void deleteUserById(Long id);
 
     boolean existsByUsername(String username);
+
+    //void createNewAgent(User agent);
 }

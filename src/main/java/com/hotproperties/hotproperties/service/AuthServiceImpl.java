@@ -69,7 +69,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public void clearJwtCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie("jwt", "");
         cookie.setPath("/");
@@ -78,6 +78,4 @@ public class AuthServiceImpl implements AuthService {
         cookie.setSecure(false); // Set to false for local development
         response.addCookie(cookie);
     }
-
 }
-

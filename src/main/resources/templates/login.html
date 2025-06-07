@@ -19,6 +19,9 @@
     <div th:if="${errorMessage}" class="failure">
         <p th:text="${errorMessage}"></p>
     </div>
+    <div th:if="${logoutMessage}" class="success">
+        <p th:text="${logoutMessage}"></p>
+    </div>
     <h1>Login</h1>
     <div th:if="${error}" class="failure">
         <p th:text="${error}"></p>
