@@ -4,14 +4,9 @@ import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.service.AuthService;
 import com.hotproperties.hotproperties.service.UserService;
 import com.hotproperties.hotproperties.repository.UserRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -37,6 +32,49 @@ public class UserController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error loading dashboard: " + e.getMessage());
             return "redirect:/auth/login";
+        }
+    }
+
+    @GetMapping("/users/profile")
+    public String profile(Model model, RedirectAttributes redirectAttributes) {
+        try {
+            userService.prepareProfileModel(model);
+            return "profile";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error loading profile: " + e.getMessage());
+            return "redirect:/auth/login";
+        }
+    }
+
+    @GetMapping("/users/profile/edit")
+    public String editProfile(Model model) {
+        model.addAttribute("user", new User());
+        return "edit-profile";
+    }
+
+    @PostMapping("/users/profile/edit")
+    public String saveEditProfile(@ModelAttribute("user") User updatedUser,
+                                  @RequestParam(required = false) String firstName,
+                                  @RequestParam(required = false) String lastName,
+                                  @RequestParam(required = false) String email,
+                                  RedirectAttributes redirectAttributes) {
+        try {
+            User actualUser = userService.getCurrentUser();
+
+            actualUser.setFirstName(updatedUser.getFirstName());
+            actualUser.setLastName(updatedUser.getLastName());
+            actualUser.setEmail(updatedUser.getEmail());
+
+            userService.updateUser(actualUser);
+
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+            return "redirect:/users/profile";
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/users/profile/edit";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error creating user: " + e.getMessage());
+            return "redirect:/users/profile/edit";
         }
     }
 
@@ -70,53 +108,7 @@ public class UserController {
         model.addAttribute("agent", new User());
         return "create-agent";
     }
-/*
-    @PostMapping("/admin/create-agent")
-    public String createAgent(@ModelAttribute("agent") User agent,
-                              RedirectAttributes redirectAttributes) {
-        try {
-            // Validate required fields
-            if (agent.getUsername() == null || agent.getUsername().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Username is required");
-                return "redirect:/admin/create-agent";
-            }
 
-            if (agent.getPassword() == null || agent.getPassword().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Password is required");
-                return "redirect:/admin/create-agent";
-            }
-
-            if (agent.getEmail() == null || agent.getEmail().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Email is required");
-                return "redirect:/admin/create-agent";
-            }
-
-            if (agent.getFirstName() == null || agent.getFirstName().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "First name is required");
-                return "redirect:/admin/create-agent";
-            }
-
-            if (agent.getLastName() == null || agent.getLastName().trim().isEmpty()) {
-                redirectAttributes.addFlashAttribute("error", "Last name is required");
-                return "redirect:/admin/create-agent";
-            }
-
-            // Check if username already exists
-            if (userService.existsByUsername(agent.getUsername())) {
-                redirectAttributes.addFlashAttribute("error", "Username already exists");
-                return "redirect:/admin/create-agent";
-            }
-
-            // Create the agent
-            userService.registerNewUser(agent, java.util.List.of("ROLE_AGENT"));
-            redirectAttributes.addFlashAttribute("success", "Agent created successfully!");
-            return "redirect:/dashboard";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error creating agent: " + e.getMessage());
-            return "redirect:/admin/create-agent";
-        }
-    }*/
     @PostMapping("/admin/create-agent")
     public String createAgent(@ModelAttribute("agent") User agent,
                               RedirectAttributes redirectAttributes) {

@@ -12,15 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +43,29 @@ public class UserServiceImpl implements UserService {
         CurrentUserContext context = getCurrentUserContext();
         model.addAttribute("user", context.user());
         model.addAttribute("authorization", context.auth());
+    }
+
+    @Override
+    public void prepareProfileModel(Model model) {
+        CurrentUserContext context = getCurrentUserContext();
+        model.addAttribute("user", context.user());
+        model.addAttribute("authorization", context.auth());
+    }
+
+    @Override
+    public void updateUser(User updatedUser) {
+
+        User user = getCurrentUserContext().user();
+
+        validateFirstName(updatedUser.getFirstName());
+        validateLastName(updatedUser.getLastName());
+        validateEmail(updatedUser.getEmail());
+
+        user.setFirstName(updatedUser.getFirstName());
+        user.setLastName(updatedUser.getLastName());
+        user.setEmail(updatedUser.getEmail());
+
+        userRepository.save(user);
     }
 /*
     @Override
@@ -189,10 +205,7 @@ public class UserServiceImpl implements UserService {
     }
 */
 
-    @Override
-    public void updateUser(User savedUser) {
-        userRepository.save(savedUser);
-    }
+
 
     @Override
     public User getCurrentUser() {
@@ -221,6 +234,8 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
+
+
 /*
     @Override
     public void createNewAgent(User agent) {

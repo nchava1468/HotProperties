@@ -3,7 +3,6 @@ package com.hotproperties.hotproperties.service;
 import com.hotproperties.hotproperties.entity.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public interface UserService {
 
     User registerNewUser(User user, List<String> roleNames);
 
-    void updateUser(User savedUser);
+    void updateUser(User user);
 
     @PreAuthorize("isAuthenticated()")
     User getCurrentUser();
@@ -41,6 +40,8 @@ public interface UserService {
     void deleteUserById(Long id);
 
     boolean existsByUsername(String username);
+
+    void prepareProfileModel(Model model);
 
     //void createNewAgent(User agent);
 }
