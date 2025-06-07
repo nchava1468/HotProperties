@@ -1,48 +1,43 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>User Profile</title>
-    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <link rel="stylesheet" th:href="@{/css/profile.css}" />
 </head>
 <body>
-<div class="login-container">
-    <h1>User Profile</h1>
-    <!-- Profile Picture -->
-    <div style="text-align: center; margin-bottom: 20px;">
-        <img th:src="@{'/profile-pictures/' + ${user.profilePicture}}"
-             alt="Profile Picture"
-             style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 2px solid #333;" />
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
+    <a th:href="@{/dashboard}" class="dashboard-link">&#8592; Dashboard</a>
+</div>
+
+<div class="container">
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
     </div>
-    <table class="profile-table">
-        <tr>
-            <td><strong>First Name:</strong></td>
-            <td th:text="${user.firstName}">Mason</td>
-        </tr>
-        <tr>
-            <td><strong>Last Name:</strong></td>
-            <td th:text="${user.lastName}">Lee</td>
-        </tr>
-        <tr>
-            <td><strong>Username:</strong></td>
-            <td th:text="${user.username}">sampleuser</td>
-        </tr>
-        <tr>
-            <td><strong>Email:</strong></td>
-            <td th:text="${user.email}">mason.lee@email.com</td>
-        </tr>
-        <tr>
-            <td><strong>Roles:</strong></td>
-            <td>
-                <ul class="no-bullets">
-                    <li th:each="role : ${user.roles}" th:text="${role.name}">ROLE_USER</li>
-                </ul>
-            </td>
-        </tr>
-    </table>
-    <div class="back-link">
-        <a th:href="@{/dashboard}">← Back to Dashboard</a>
+    <h2>My Profile</h2>
+
+    <div class="profile-container">
+        <div class="profile-d">
+            <strong>First Name:</strong> <span th:text="${user.firstName}">First Name</span>
+        </div>
+        <div class="profile-d">
+            <strong>Last Name:</strong> <span th:text="${user.lastName}">Last Name</span>
+        </div>
+        <div class="profile-d">
+            <strong>Email:</strong> <span th:text="${user.email}">Email</span>
+        </div>
+        <div class="profile-d">
+            <strong>Role:</strong>
+            <span th:each="role : ${user.roles}" th:text="${role.name.substring(5)}">ROLE</span>
+        </div>
     </div>
+
+    <div class="button">
+        <a th:href="@{/users/profile/edit}" class="dashboard-link">Edit Profile</a>
+        <a th:href="@{/dashboard}" class="dashboard-link">Back To Dashboard</a>
+    </div>
+
 </div>
 </body>
 </html>

@@ -44,7 +44,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        if (path.startsWith("/login") || path.startsWith("/css") || path.startsWith("/register") || path.startsWith("/images")) {
+        // Only skip JWT validation for public resources and login/register
+        if (path.startsWith("/css") || path.startsWith("/images") || 
+            path.equals("/login") || path.equals("/register") ||
+            path.equals("/") || path.equals("/index")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -61,28 +64,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         }
 
-        // Skip JWT logic if token is missing or empty
+        // For admin routes, require a valid token
+        if (path.startsWith("/admin")) {
+            if (token == null || token.trim().isEmpty()) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.getWriter().write("{ \"error\": \"Authentication required for admin access\" }");
+                return;
+            }
+        }
+
+        // Skip JWT logic if token is missing or empty for non-admin routes
         if (token == null || token.trim().isEmpty()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String username = jwtUtil.extractUsername(token);
+        try {
+            String username = jwtUtil.extractUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            if (jwtUtil.validateToken(token, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                        userDetails, null, userDetails.getAuthorities());
 
-        if (token != null && jwtUtil.validateToken(token, userDetails)) {
-            //String username = jwtUtil.extractUsername(token);
-            //UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, null, userDetails.getAuthorities());
-
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            log.error("Error processing JWT token: {}", e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{ \"error\": \"Invalid token\" }");
+            return;
         }
 
         filterChain.doFilter(request, response);

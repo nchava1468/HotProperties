@@ -1,11 +1,8 @@
 package com.hotproperties.hotproperties.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,8 +28,6 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-
-
     @ManyToMany(fetch = FetchType.EAGER)  // EAGER fetch to load roles during login
     @JoinTable(
             name = "user_roles",
@@ -41,40 +36,23 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    // Each user has a manager
-    @ManyToOne
-    @JoinColumn(name = "manager_id")
-    private User manager;
-
-    // Each manager has a list of users they manage
-    @OneToMany(mappedBy = "manager")
+    /*
+    @OneToMany(mappedBy = "agent")
     @JsonIgnore
-    private List<User> subordinates = new ArrayList<>();
-
-
-    @Column()
-    private String profilePicture; // stores filename or relative path
+    private List<Property> properties = new ArrayList<>();
+     */
 
     // --- Constructors ---
     public User() {}
 
     public User(String username, String password, String firstName, String lastName,
-                String email, Set<Role> roles, String profilePicture) {
+                String email, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.roles = roles;
-        this.profilePicture = profilePicture;
-    }
-
-    public String getProfilePicture() {
-        return profilePicture;
-    }
-
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
     }
 
     // --- Getters and Setters ---
@@ -126,14 +104,7 @@ public class User {
         this.email = email;
     }
 
-    public User getManager() {
-        return manager;
-    }
-
-    public void setManager(User manager) {
-        this.manager = manager;
-    }
-
+    /*
     public List<User> getSubordinates() {
         return subordinates;
     }
@@ -145,6 +116,6 @@ public class User {
     public void addEmployee(User u1) {
         this.subordinates.add(u1);
         u1.setManager(this);
-    }
+    } */
 }
 

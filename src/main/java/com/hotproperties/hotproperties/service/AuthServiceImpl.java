@@ -69,15 +69,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public void clearJwtCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie("jwt", "");
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
-        cookie.setSecure(true); // only if your app uses HTTPS
+        cookie.setSecure(false); // Set to false for local development
         response.addCookie(cookie);
     }
-
 }
-

@@ -19,11 +19,14 @@
     <div th:if="${errorMessage}" class="failure">
         <p th:text="${errorMessage}"></p>
     </div>
+    <div th:if="${logoutMessage}" class="success">
+        <p th:text="${logoutMessage}"></p>
+    </div>
     <h1>Login</h1>
     <div th:if="${error}" class="failure">
         <p th:text="${error}"></p>
     </div>
-    <form method="post" th:action="@{/login}" th:object="${user}">
+    <form method="post" th:action="@{/auth/login}" th:object="${user}">
         <label for="username">Username</label>
         <input id="username" th:field="*{username}" type="text"/>
         <label for="password">Password</label>
@@ -40,7 +43,7 @@
     <!-- Register Link -->
     <p class="section-spacing">
         Don't have an account?
-        <a th:href="@{/register}">Register</a>
+        <a th:href="@{/auth/register}">Register</a>
     </p>
 </div>
 </body>

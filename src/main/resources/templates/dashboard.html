@@ -1,28 +1,35 @@
 <!DOCTYPE html>
-
-<html xmlns:sec="https://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>User Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/login.css}"/>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
 </head>
 <body>
-<div class="login-container">
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
+</div>
+
+<div class="dashboard-container">
     <h1 th:text="'Hello, ' + ${user.firstName} + ' ' + ${user.lastName} + '!'">Hello!</h1>
-    <p class="profile-table">Welcome to your dashboard.</p>
-    <ul class="no-bullets">
-        <li><a th:href="@{/profile}">View Profile</a></li>
-        <li><a th:href="@{/settings}">Account Settings</a></li>
+    <p>Your role: <strong th:each="role : ${user.roles}" th:text="${role.name.substring(5)}">NONE</strong></p>
 
-        <li th:if="${#authorization.expression('hasRole(''MANAGER'')')}">
-            <a th:href="@{/manager/team}">View All Employees</a>
-        </li>
+    <nav class="nav-links">
 
-        <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
-            <a th:href="@{/admin/users}">View All Users</a>
-        </li>
+        <a th:href="@{/users/profile}">My Profile</a>
 
-        <li><a class="section-spacing" th:href="@{/logout}">Log Out</a></li>
-    </ul>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/users}">Manage Users</a>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/create-agent}">Create Agent</a>
+
+        <a th:if="${#authorization.expression('hasRole(''AGENT'')')}" th:href="@{/agent/listings}">Manage Listings</a>
+        <a th:if="${#authorization.expression('hasRole(''AGENT'')')}" th:href="@{/agent/add-property}">Add New Property</a>
+
+        <a th:if="${#authorization.expression('hasRole(''BUYER'')')}" th:href="@{/properties}">Browse Properties</a>
+
+    </nav>
+
+    <form th:action="@{/auth/logout}" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
 </div>
 </body>
 </html>
