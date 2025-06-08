@@ -2,6 +2,7 @@ package com.hotproperties.hotproperties.service;
 
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.PropertyImage;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyImageParameterException;
 import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class PropertyImageServiceImpl implements PropertyImageService {
     }
 
     @Override
-    public void storePropertyImages(Property property, MultipartFile[] images) {
+    public void storePropertyImages(Property property, MultipartFile[] images) throws InvalidPropertyImageParameterException {
 
         if (images == null) {
             return;
