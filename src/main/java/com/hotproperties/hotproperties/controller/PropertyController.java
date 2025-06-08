@@ -9,12 +9,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import com.hotproperties.hotproperties.entity.Property;
 
 @Controller
 public class PropertyController {
@@ -69,6 +75,39 @@ public class PropertyController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @GetMapping("/properties/edit/{id}")
+    @PreAuthorize("hasRole('AGENT')")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        model.addAttribute("property", propertyService.findById(id));
+        return "edit-property";
+    }
+
+    @PostMapping("/properties/edit/{id}")
+    @PreAuthorize("hasRole('AGENT')")
+    public String updateProperty(@PathVariable Long id, @ModelAttribute Property property, @RequestParam(value = "images", required = false) MultipartFile[] images) {
+        propertyService.updateProperty(id, property, images);
+        return "redirect:/agent/listings";
+    }
+
+    @PostMapping("/properties/{propertyId}/images/{imageId}/delete")
+    @PreAuthorize("hasRole('AGENT')")
+    public String deleteImage(@PathVariable Long propertyId, @PathVariable Long imageId) {
+        propertyService.deleteImage(propertyId, imageId);
+        return "redirect:/properties/edit/" + propertyId;
+    }
+
+    @PostMapping("/agent/delete-property/{id}")
+    @PreAuthorize("hasRole('AGENT')")
+    public String deleteProperty(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            propertyService.deletePropertyById(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Property deleted successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting property: " + e.getMessage());
+        }
+        return "redirect:/agent/listings";
     }
 
 }

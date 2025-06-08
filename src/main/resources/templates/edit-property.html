@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Property</title>
+    <link rel="stylesheet" th:href="@{/css/edit-property.css}">
+</head>
+<body>
+<div class="header">
+    <img src="/images/logo.png" class="logo" alt="Hot Properties Logo">
+    <a class="dashboard-link" th:href="@{/dashboard}">← Dashboard</a>
+</div>
+
+<div class="form-container">
+    <h2>Edit Property</h2>
+    <form th:action="@{'/properties/edit/' + ${property.id}}" th:object="${property}" method="post" enctype="multipart/form-data">
+        <label>Title:</label>
+        <input type="text" th:field="*{title}" required>
+
+        <label>Price:</label>
+        <input type="number" th:field="*{price}" step="0.01" required>
+
+        <label>Location:</label>
+        <input type="text" th:field="*{location}" required>
+
+        <label>Size (sq ft):</label>
+        <input type="text" th:field="*{size}" required>
+
+        <label>Description:</label>
+        <textarea th:field="*{description}" rows="4"></textarea>
+
+        <label>Add New Images (optional):</label>
+        <input type="file" name="images" multiple>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <div class="existing-images">
+        <h3>Existing Images</h3>
+        <div class="images-list">
+            <div class="image-item" th:each="img : ${property.propertyImages}">
+                <img th:src="@{'/property-images/' + ${img.fileName}}" alt="Property Image" class="image-view" />
+                <form th:action="@{'/properties/' + ${property.id} + '/images/' + ${img.id} + '/delete'}" method="post" style="display:inline;">
+                    <button type="submit" class="delete-btn" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a th:href="@{/agent/listings}">Back to Manage Properties</a>
+    </div>
+</div>
+</body>
+</html> 

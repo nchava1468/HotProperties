@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -158,12 +159,13 @@ public class UserController {
             @RequestParam String location,
             @RequestParam String size,
             @RequestParam(required = false) String description,
+            @RequestParam(value = "images", required = false) MultipartFile[] images,
             RedirectAttributes redirectAttributes
     ) {
         Integer sizeInt = Integer.valueOf(size);
         Property property = new Property(title, price, description, location, sizeInt);
 
-        propertyService.addNewProperty(property);
+        propertyService.addNewProperty(property, images);
         redirectAttributes.addFlashAttribute("success", "Property added successfully!");
         return "redirect:/agent/listings";
     }
