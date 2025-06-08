@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <title>Property View</title>
-    <link rel="stylesheet" th:href="@{/css/property.css}" />
+    <link rel="stylesheet" th:href="@{/css/property.css}"/>
 </head>
 <body>
 
 <div class="header">
-    <img src="/images/logo.png" alt="HotProperties Logo" class="logo" />
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
     <a th:href="@{/dashboard}" class="dashboard-link">&#8592; Dashboard</a>
 </div>
 
 <div class="container">
-
+    <div class="success" th:if="${successMessage}" th:text="${successMessage}"></div>
     <div class="property-card">
         <div>
+
+            <div>
+                <div th:if="${!favoriteExists}">
+                    <form th:action="@{/favorites/add/{id}(id=${property.id})}" method="post">
+                        <button type="submit" class="favorite-button">Add to Favorites</button>
+                    </form>
+                </div>
+                <div th:if="${favoriteExists}">
+                    <form th:action="@{/favorites/delete/{id}(id=${property.id})}" method="post">
+                        <button type="submit" class="delete-button">Remove from Favorites</button>
+                    </form>
+                </div>
+            </div>
+
             <p th:text="${property.title}" class="property-title"></p>
             <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
             <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
@@ -26,12 +40,16 @@
             <div class="images-section">
                 <h1>Property Images</h1>
                 <div class="image-gallery">
-                    <div class="property-image-wrapper" th:each="img : ${property.propertyImages}" >
-                        <img th:src="@{'/property-images/' + ${img.fileName}}" alt="Property Image" class="property-image" />
+                    <div class="property-image-wrapper" th:each="img : ${property.propertyImages}">
+                        <img th:src="@{'/property-images/' + ${img.fileName}}" alt="Property Image"
+                             class="property-image"/>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="back-link">
+        <a th:href="@{/properties/favorites}">&#8592; Back to Favorites</a>
     </div>
     <div class="back-link">
         <a th:href="@{/properties/list}">&#8592; Back to Listings</a>

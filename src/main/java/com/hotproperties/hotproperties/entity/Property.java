@@ -26,6 +26,9 @@ public class Property {
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<PropertyImage> propertyImages = new ArrayList<>();
 
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Favorite> favorites = new ArrayList<>();
+
     public Property() {}
 
     public Property(String title, double price, String description, String location, Integer size) {
@@ -39,6 +42,11 @@ public class Property {
     public void addPropertyImage(PropertyImage propertyImage) {
         propertyImages.add(propertyImage);
         propertyImage.setProperty(this);
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.setProperty(this);
     }
 
     public Long getId() { return id; }
@@ -64,5 +72,13 @@ public class Property {
     }
     public void setPropertyImages(List<PropertyImage> propertyImages) {
         this.propertyImages = propertyImages;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 }
