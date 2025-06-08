@@ -5,7 +5,6 @@ import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.PropertyImage;
 import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
-import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
 import jakarta.transaction.Transactional;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -23,11 +21,13 @@ public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
     private final PropertyImageRepository propertyImageRepository;
+    private final PropertyImageService propertyImageService;
 
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PropertyImageService propertyImageService) {
         this.propertyRepository = propertyRepository;
         this.propertyImageRepository = propertyImageRepository;
+        this.propertyImageService = propertyImageService;
     }
 
     @Override
@@ -42,35 +42,17 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void addNewProperty(Property property, MultipartFile[] images) {
+
         validateTitle(property.getTitle());
         validatePrice(property.getPrice());
         validateLocation(property.getLocation());
         validateSize(property.getSize());
 
-        propertyRepository.save(property); // Save first to get ID
+        propertyRepository.save(property);
 
-        if (images != null) {
-            for (MultipartFile file : images) {
-                if (!file.isEmpty()) {
-                    try {
-                        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                        String uploadDir = "uploads/property-images/";
-                        File dest = new File(uploadDir + fileName);
-                        dest.getParentFile().mkdirs();
-                        file.transferTo(dest);
+        propertyImageService.storePropertyImages(property, images);
 
-                        PropertyImage img = new PropertyImage();
-                        img.setFileName(fileName);
-                        img.setProperty(property);
-                        property.addPropertyImage(img);
-                        propertyImageRepository.save(img);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        propertyRepository.save(property); // Save again with images
+        propertyRepository.save(property);
     }
 
     @Override
@@ -87,7 +69,11 @@ public class PropertyServiceImpl implements PropertyService {
         existing.setPrice(property.getPrice());
         existing.setLocation(property.getLocation());
         existing.setSize(property.getSize());
-        existing.setDescription(property.getDescription());
+        if (property.getDescription() != null) {
+            existing.setDescription(property.getDescription());
+        }
+
+        propertyImageService.storePropertyImages(property, images);
 
         propertyRepository.save(existing);
     }

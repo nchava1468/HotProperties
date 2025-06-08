@@ -125,3 +125,10 @@ th {
 .action-buttons form {
     margin: 0;
 }
+
+.success {
+    color: green;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+    text-align: center;
+}

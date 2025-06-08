@@ -158,24 +158,6 @@ public class UserController {
         return "add-property";
     }
 
-    @PostMapping("/agent/properties/add")
-    @PreAuthorize("hasRole('AGENT')")
-    public String addProperty(
-            @RequestParam String title,
-            @RequestParam double price,
-            @RequestParam String location,
-            @RequestParam String size,
-            @RequestParam(required = false) String description,
-            @RequestParam(value = "images", required = false) MultipartFile[] images,
-            RedirectAttributes redirectAttributes
-    ) {
-        Integer sizeInt = Integer.valueOf(size);
-        Property property = new Property(title, price, description, location, sizeInt);
-        propertyService.addNewProperty(property, images);
-        redirectAttributes.addFlashAttribute("success", "Property added successfully!");
-        return "redirect:/agent/listings";
-    }
-
     @ExceptionHandler(InvalidUserParameterException.class)
     public ResponseEntity<?> handleInvalidUserParameterException (InvalidUserParameterException ex, HttpServletRequest request) {
         ApiExceptionDto apiExceptionDto = new ApiExceptionDto(

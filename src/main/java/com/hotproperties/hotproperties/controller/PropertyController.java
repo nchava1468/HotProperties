@@ -95,8 +95,16 @@ public class PropertyController {
 
     @PostMapping("/properties/edit/{id}")
     @PreAuthorize("hasRole('AGENT')")
-    public String updateProperty(@PathVariable Long id, @ModelAttribute Property property, @RequestParam(value = "images", required = false) MultipartFile[] images) {
-        propertyService.updateProperty(id, property, images);
+    public String updateProperty(@PathVariable Long id, @ModelAttribute Property property,
+                                 @RequestParam(value = "images", required = false) MultipartFile[] images,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            propertyService.updateProperty(id, property, images);
+            redirectAttributes.addFlashAttribute("successMessage", "Property updated successfully");
+            return "redirect:/agent/listings";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error deleting property: " + e.getMessage());
+        }
         return "redirect:/agent/listings";
     }
 
@@ -148,6 +156,24 @@ public class PropertyController {
             redirectAttributes.addFlashAttribute("error", "Error loading favorites: " + e.getMessage());
             return "redirect:/dashboard";
         }
+    }
+
+    @PostMapping("/properties/add")
+    @PreAuthorize("hasRole('AGENT')")
+    public String addProperty(
+                            @RequestParam String title,
+                            @RequestParam double price,
+                            @RequestParam String location,
+                            @RequestParam String size,
+                            @RequestParam(required = false) String description,
+                            @RequestParam(value = "images", required = false) MultipartFile[] images,
+                            RedirectAttributes redirectAttributes) {
+
+        Integer sizeInt = Integer.valueOf(size);
+        Property property = new Property(title, price, description, location, sizeInt);
+        propertyService.addNewProperty(property, images);
+        redirectAttributes.addFlashAttribute("successMessage", "Property added successfully!");
+        return "redirect:/agent/listings";
     }
 
     @PostMapping("/favorites/delete/{id}")
