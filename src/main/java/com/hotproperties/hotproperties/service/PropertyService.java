@@ -7,4 +7,6 @@ import java.util.List;
 public interface PropertyService {
 
     List<Property> findAllProperties();
+
+    Property findById(Long id);
 }
