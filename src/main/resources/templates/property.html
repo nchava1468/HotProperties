@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Property View</title>
+    <link rel="stylesheet" th:href="@{/css/property.css}" />
+</head>
+<body>
+
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo" />
+    <a th:href="@{/dashboard}" class="dashboard-link">&#8592; Dashboard</a>
+</div>
+
+<div class="container">
+
+    <div class="property-card">
+        <div>
+            <p th:text="${property.title}" class="property-title"></p>
+            <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
+            <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
+            <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
+            <p><strong>Description:</strong> <span th:text="${property.description}"></span></p>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a th:href="@{/properties/list}">&#8592; Back to Listings</a>
+    </div>
+</div>
+
+</body>
+</html>

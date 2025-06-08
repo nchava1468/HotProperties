@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropertyServiceImpl implements PropertyService {
@@ -21,4 +22,12 @@ public class PropertyServiceImpl implements PropertyService {
     public List<Property> findAllProperties() {
         return propertyRepository.findAll();
     }
+
+    @Override
+    public Property findById(Long id) {
+        return propertyRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("No property exists with ID: " + id));
+    }
+
+
 }

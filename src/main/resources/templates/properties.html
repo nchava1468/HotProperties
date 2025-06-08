@@ -30,11 +30,11 @@
 
     <div th:each="property : ${properties}" class="property-card" style="display: flex; border: 1px solid #ccc; border-radius: 8px; margin: 20px 0; padding: 15px;">
     <div>
-        <a th:href="@{/properties/{id}(id=${property.id})}" th:text="${property.title}" style="font-size: 1.2em; font-weight: bold; color: #007BFF;"></a>
+        <a th:text="${property.title}" class="property-title"></a>
         <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
         <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
         <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
-        <a th:href="@{/properties/{id}(id=${property.id})}" class="btn-link">View Details</a>
+        <a th:href="@{/properties/view/{id}(id=${property.id})}" class="btn-link">View Details</a>
     </div>
     </div>
 
