@@ -1,7 +1,9 @@
 package com.hotproperties.hotproperties.service;
 
+import com.hotproperties.hotproperties.entity.Favorite;
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.PropertyImage;
+import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
 import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.PropertyImageRepository;
@@ -101,10 +103,20 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
+    @Transactional
     public void deletePropertyById(Long id) {
-        propertyRepository.deleteById(id);
-    }
 
+        Property property = propertyRepository.findById(id).orElseThrow();
+
+        for (Favorite favorite : property.getFavorites()) {
+            User user = favorite.getUser();
+            user.getFavorites().remove(favorite);
+        }
+
+        property.getFavorites().clear();
+        propertyRepository.delete(property);
+    }
+    
     @Override
     public List<Property> filterProperties(Integer zip, Integer minSqFt, Integer minPrice, Integer maxPrice, String sort) {
 
