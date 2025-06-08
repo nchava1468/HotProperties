@@ -1,11 +1,16 @@
 package com.hotproperties.hotproperties.controller;
 
+import com.hotproperties.hotproperties.dtos.ApiExceptionDto;
 import com.hotproperties.hotproperties.entity.Favorite;
 import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.entity.Property;
+import com.hotproperties.hotproperties.exceptions.InvalidFavoriteParameterException;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyImageParameterException;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
 import com.hotproperties.hotproperties.service.FavoriteService;
 import com.hotproperties.hotproperties.service.PropertyService;
 import com.hotproperties.hotproperties.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -167,5 +172,50 @@ public class PropertyController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @ExceptionHandler(InvalidPropertyParameterException.class)
+    public ResponseEntity<?> handleInvalidPropertyParameterException (InvalidPropertyParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidFavoriteParameterException.class)
+    public ResponseEntity<?> handleInvalidFavoriteParameterException (InvalidFavoriteParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidPropertyImageParameterException.class)
+    public ResponseEntity<?> handleInvalidPropertyImageParameterException (InvalidPropertyImageParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleNotFoundException(
+            Exception ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.BAD_REQUEST);
     }
 }

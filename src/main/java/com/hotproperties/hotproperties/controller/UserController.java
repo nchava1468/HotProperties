@@ -1,10 +1,17 @@
 package com.hotproperties.hotproperties.controller;
 
+import com.hotproperties.hotproperties.dtos.ApiExceptionDto;
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyImageParameterException;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
+import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.service.PropertyService;
 import com.hotproperties.hotproperties.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -167,5 +174,39 @@ public class UserController {
         propertyService.addNewProperty(property, images);
         redirectAttributes.addFlashAttribute("success", "Property added successfully!");
         return "redirect:/agent/listings";
+    }
+
+    @ExceptionHandler(InvalidUserParameterException.class)
+    public ResponseEntity<?> handleInvalidUserParameterException (InvalidUserParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InvalidPropertyParameterException.class)
+    public ResponseEntity<?> handleInvalidPropertyParameterException (InvalidPropertyParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleNotFoundException(
+            Exception ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.BAD_REQUEST);
     }
 }

@@ -15,9 +15,12 @@ public interface PropertyService {
     @PreAuthorize("hasRole('AGENT')")
     void addNewProperty(Property property, MultipartFile[] images);
 
+    @PreAuthorize("hasRole('AGENT')")
     void updateProperty(Long id, Property property, MultipartFile[] images);
 
+    @PreAuthorize("hasRole('AGENT')")
     void deleteImage(Long propertyId, Long imageId);
 
+    @PreAuthorize("hasRole('AGENT')")
     void deletePropertyById(Long id);
 }

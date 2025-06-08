@@ -23,6 +23,7 @@
             <th>Location</th>
             <th>Size</th>
             <th>Images</th>
+            <th>Favorites</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -42,7 +43,7 @@
                     <span>No images</span>
                 </div>
             </td>
-
+            <td th:text="${#lists.size(property.favorites)}"></td>
             <td>
                 <div class="action-buttons">
                     <a th:href="@{'/properties/edit/' + ${property.id}}" class="edit-btn">Edit</a>

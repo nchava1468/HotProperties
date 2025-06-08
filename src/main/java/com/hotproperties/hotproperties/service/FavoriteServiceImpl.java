@@ -3,6 +3,7 @@ package com.hotproperties.hotproperties.service;
 import com.hotproperties.hotproperties.entity.Favorite;
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.exceptions.InvalidFavoriteParameterException;
 import com.hotproperties.hotproperties.repository.FavoriteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,12 +33,13 @@ public class FavoriteServiceImpl implements FavoriteService{
     }
 
     @Override
-    public void addFavorite(Property property, User user) {
+    public void addFavorite(Property property, User user) throws InvalidFavoriteParameterException {
         if (favoriteExists(property, user)) {
             return;
         } else {
             Favorite favoriteAdded = new Favorite(user, property);
             favoriteAdded.setTimeCreated(LocalDateTime.now());
+            property.addFavorite(favoriteAdded);
             favoriteRepository.save(favoriteAdded);
         }
     }

@@ -2,8 +2,11 @@ package com.hotproperties.hotproperties.service;
 
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.PropertyImage;
+import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
+import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,16 +73,29 @@ public class PropertyServiceImpl implements PropertyService {
     public void updateProperty(Long id, Property property, MultipartFile[] images) {
 
         Property existing = propertyRepository.findById(id).orElseThrow();
+
+        validateTitle(property.getTitle());
+        validatePrice(property.getPrice());
+        validateLocation(property.getLocation());
+        validateSize(property.getSize());
+
         existing.setTitle(property.getTitle());
         existing.setPrice(property.getPrice());
         existing.setLocation(property.getLocation());
         existing.setSize(property.getSize());
         existing.setDescription(property.getDescription());
+
         propertyRepository.save(existing);
     }
 
+    @Transactional
     @Override
     public void deleteImage(Long propertyId, Long imageId) {
+        Property property = propertyRepository.findById(propertyId).orElseThrow();
+        PropertyImage propertyImage = propertyImageRepository.findById(imageId).orElseThrow();
+        property.getPropertyImages().remove(propertyImage);
+        propertyImage.setProperty(null);
+        propertyImageRepository.deleteById(imageId);
     }
 
     @Override
@@ -91,27 +107,25 @@ public class PropertyServiceImpl implements PropertyService {
 
     private void validateTitle(String title) {
         if (title == null || title.trim().isEmpty()) {
-            throw new IllegalArgumentException("Title is required");
+            throw new InvalidPropertyParameterException("Title is required");
         }
     }
 
     private void validatePrice(double price) {
         if (!(price > 0)) {
-            throw new IllegalArgumentException("Price must be greater than zero");
+            throw new InvalidPropertyParameterException("Price must be greater than zero");
         }
     }
 
     private void validateLocation(String location) {
         if (location == null || location.trim().isEmpty()) {
-            throw new IllegalArgumentException("Location is required");
+            throw new InvalidPropertyParameterException("Location is required");
         }
     }
 
     private void validateSize(Integer size) {
         if (size == null || !(size > 0)) {
-            throw new IllegalArgumentException("Size must be a positive number");
+            throw new InvalidPropertyParameterException("Size must be a positive number");
         }
     }
-
-
 }
