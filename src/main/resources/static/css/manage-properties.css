@@ -61,7 +61,7 @@ th {
     background-color: #f5f5f5;
 }
 
-.images-cell img {
+.images-cell img.image-view {
     width: 60px;
     height: 50px;
     margin-right: 5px;
