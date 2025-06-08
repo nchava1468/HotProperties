@@ -19,16 +19,16 @@
 
     <div class="profile-container">
         <div class="profile-d">
-            <strong>First Name:</strong> <span th:text="${user.firstName}">First Name</span>
+            <strong>First Name: </strong> <span th:text="${user.firstName}">First Name</span>
         </div>
         <div class="profile-d">
-            <strong>Last Name:</strong> <span th:text="${user.lastName}">Last Name</span>
+            <strong>Last Name: </strong> <span th:text="${user.lastName}">Last Name</span>
         </div>
         <div class="profile-d">
-            <strong>Email:</strong> <span th:text="${user.email}">Email</span>
+            <strong>Email: </strong> <span th:text="${user.email}">Email</span>
         </div>
         <div class="profile-d">
-            <strong>Role:</strong>
+            <strong>Role: </strong>
             <span th:each="role : ${user.roles}" th:text="${role.name.substring(5)}">ROLE</span>
         </div>
     </div>

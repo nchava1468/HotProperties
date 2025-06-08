@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +27,7 @@ public class PropertyController {
     }
 
     @GetMapping("/properties/list")
+    @PreAuthorize("hasRole('BUYER')")
     public String allProperties (Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("properties", propertyService.findAllProperties());
@@ -37,6 +39,7 @@ public class PropertyController {
     }
 
     @GetMapping("/properties/view/{id}")
+    @PreAuthorize("hasRole('BUYER')")
     public String viewProperty (@PathVariable Long id,
                                 Model model, RedirectAttributes redirectAttributes) {
         try {

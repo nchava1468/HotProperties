@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
     // === VALIDATION METHODS ===
 
     private void validateUsername(String username) {
-        if (username == null || username.trim().isEmpty() || userRepository.existsByUsername(username)) {
+        if (username == null || username.trim().isEmpty() || existsByUsername(username)) {
             throw new IllegalArgumentException("Username is required and must be unique");
         }
     }
