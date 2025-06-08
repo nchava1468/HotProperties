@@ -52,6 +52,21 @@ public class PropertyController {
         }
     }
 
+    @GetMapping("/properties/search")
+    @PreAuthorize("hasRole('BUYER')")
+    public String searchProperties(
+                            @RequestParam(required = false) Integer zip,
+                            @RequestParam(required = false) Integer minSqFt,
+                            @RequestParam(required = false) Integer minPrice,
+                            @RequestParam(required = false) Integer maxPrice,
+                            @RequestParam(required = false) String sort,
+                            Model model) {
+
+        List<Property> properties = propertyService.filterProperties(zip, minSqFt, minPrice, maxPrice, sort);
+        model.addAttribute("properties", properties);
+        return "properties";
+    }
+
     @GetMapping("/properties/view/{id}")
     @PreAuthorize("hasRole('BUYER')")
     public String viewProperty (@PathVariable Long id,
@@ -152,7 +167,6 @@ public class PropertyController {
             return "redirect:/properties/list";
         }
     }
-
 
     @GetMapping("/property-images/{filename:.+}")
     @ResponseBody
