@@ -25,8 +25,48 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public Property findById(Long id) {
-        return propertyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No property exists with ID: " + id));
+        return propertyRepository.findById(id).orElseThrow();
+    }
+
+    @Override
+    public List<Property> findAll() {
+        return propertyRepository.findAll();
+    }
+
+    @Override
+    public void addNewProperty(Property property) {
+        validateTitle(property.getTitle());
+        validatePrice(property.getPrice());
+        validateLocation(property.getLocation());
+        validateSize(property.getSize());
+
+        propertyRepository.save(property);
+    }
+
+    // === VALIDATION METHODS ===
+
+    private void validateTitle(String title) {
+        if (title == null || title.trim().isEmpty()) {
+            throw new IllegalArgumentException("Title is required");
+        }
+    }
+
+    private void validatePrice(double price) {
+        if (!(price > 0)) {
+            throw new IllegalArgumentException("Price must be greater than zero");
+        }
+    }
+
+    private void validateLocation(String location) {
+        if (location == null || location.trim().isEmpty()) {
+            throw new IllegalArgumentException("Location is required");
+        }
+    }
+
+    private void validateSize(Integer size) {
+        if (size == null || !(size > 0)) {
+            throw new IllegalArgumentException("Size must be a positive number");
+        }
     }
 
 

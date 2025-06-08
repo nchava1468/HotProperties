@@ -2,8 +2,10 @@ package com.hotproperties.hotproperties.initializers;
 
 
 import com.hotproperties.hotproperties.entity.Property;
+import com.hotproperties.hotproperties.entity.PropertyImage;
 import com.hotproperties.hotproperties.entity.Role;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
 import com.hotproperties.hotproperties.repository.RoleRepository;
 import com.hotproperties.hotproperties.repository.UserRepository;
@@ -12,6 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -21,13 +28,15 @@ public class DataInitializer {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PropertyRepository propertyRepository;
+    private final PropertyImageRepository propertyImageRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public DataInitializer(UserRepository userRepository, RoleRepository roleRepository, PropertyRepository propertyRepository, PasswordEncoder passwordEncoder) {
+    public DataInitializer(UserRepository userRepository, RoleRepository roleRepository, PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.propertyRepository = propertyRepository;
+        this.propertyImageRepository = propertyImageRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -65,7 +74,7 @@ public class DataInitializer {
             System.out.println("🟢 Admin user created.");
         }
 
-        if (propertyRepository.count() == 0) {
+        if (propertyRepository.count() == 0 || propertyImageRepository.count() == 0) {
 
             Property property1 = new Property(
                     "3818 N Christiana Ave",
@@ -186,14 +195,262 @@ public class DataInitializer {
                     "Chicago, IL 60613",
                     2869);
 
+            PropertyImage propertyImage1 = new PropertyImage("1743280986563_8c1815366539cf90fd6cb38dbb1b1e1e-cc_ft_960.webp");
+            PropertyImage propertyImage2 = new PropertyImage("1743280986566_3bd01c92edfab81e6ef7702df5c5f315-cc_ft_960.webp");
+            PropertyImage propertyImage3 = new PropertyImage("1743280986566_419c22f5dd1ddc1a6d861df85c941db9-cc_ft_960.webp");
+            PropertyImage propertyImage4 = new PropertyImage("1743280986569_e0eeefdb3c45f55b99d1ad272a9595c3-cc_ft_960.webp");
+            PropertyImage propertyImage5 = new PropertyImage("1743280986573_b48577b143d2f0c5b79a4bb14dd7ec0d-cc_ft_960.webp");
+            property1.addPropertyImage(propertyImage1);
+            property1.addPropertyImage(propertyImage2);
+            property1.addPropertyImage(propertyImage3);
+            property1.addPropertyImage(propertyImage4);
+            property1.addPropertyImage(propertyImage5);
+
+            PropertyImage propertyImage6 = new PropertyImage("1743281104544_cc41995923da491a77509ba3c594dfbd-cc_ft_960.webp");
+            PropertyImage propertyImage7 = new PropertyImage("1743281104544_dcfa791d9108ba2825906026396b1b06-cc_ft_960.webp");
+            PropertyImage propertyImage8 = new PropertyImage("1743281104545_3d2b506d9411b5465ba886b4f8a5e236-cc_ft_960.webp");
+            PropertyImage propertyImage9 = new PropertyImage("1743281104545_97f285258a02cc3c9fb1d378463266ce-cc_ft_960.webp");
+            PropertyImage propertyImage10 = new PropertyImage("1743281104545_79540e8ca9aafe743e3c504a3fe95750-cc_ft_960.webp");
+
+            property2.addPropertyImage(propertyImage6);
+            property2.addPropertyImage(propertyImage7);
+            property2.addPropertyImage(propertyImage8);
+            property2.addPropertyImage(propertyImage9);
+            property2.addPropertyImage(propertyImage10);
+
+            PropertyImage propertyImage11 = new PropertyImage("1743281271085_cbd7103d0fafdb12e7debbc0654493bd-cc_ft_960.webp");
+            PropertyImage propertyImage12 = new PropertyImage("1743281271086_3d168d1493c8661b69c87cc55d6099d1-cc_ft_960.webp");
+            PropertyImage propertyImage13 = new PropertyImage("1743281271086_5d44f3575f04874e53743a5c1718ca88-cc_ft_960.webp");
+            PropertyImage propertyImage14 = new PropertyImage("1743281271087_2c9fade74be1b69ca7c7cb273c6c87c2-cc_ft_960.webp");
+            PropertyImage propertyImage15 = new PropertyImage("1743281271087_79cac6350cb9217e7a6bcc8f5d5fd0cb-cc_ft_960.webp");
+            PropertyImage propertyImage16 = new PropertyImage("1743281271087_978969480d1b891918b174eb749a651d-cc_ft_960.webp");
+            PropertyImage propertyImage17 = new PropertyImage("1743281271088_0bd9f82b77c94edc082bb39408007973-cc_ft_960.webp");
+
+            property3.addPropertyImage(propertyImage11);
+            property3.addPropertyImage(propertyImage12);
+            property3.addPropertyImage(propertyImage13);
+            property3.addPropertyImage(propertyImage14);
+            property3.addPropertyImage(propertyImage15);
+            property3.addPropertyImage(propertyImage16);
+            property3.addPropertyImage(propertyImage17);
+
+            PropertyImage propertyImage18 = new PropertyImage("1743301338472_33a4f1cbdd5fb813e4696238006b7882-cc_ft_960.webp");
+            PropertyImage propertyImage19 = new PropertyImage("1743301338476_0ce73eb7b856382475f51f49f79beb89-cc_ft_960.webp");
+            PropertyImage propertyImage20 = new PropertyImage("1743301338476_78dd178cbaaa151772e98ddc8f157b61-cc_ft_960.webp");
+            PropertyImage propertyImage21 = new PropertyImage("1743301338477_28dffdb73243072752daf3888d06e47a-cc_ft_960.webp");
+            PropertyImage propertyImage22 = new PropertyImage("1743301338477_cbf60776fd416a41ea66240135d6edbe-cc_ft_960.webp");
+            PropertyImage propertyImage23 = new PropertyImage("1743301338477_dd32b92ceb6814bda0aa4e5b072887df-cc_ft_960.webp");
+
+            property4.addPropertyImage(propertyImage18);
+            property4.addPropertyImage(propertyImage19);
+            property4.addPropertyImage(propertyImage20);
+            property4.addPropertyImage(propertyImage21);
+            property4.addPropertyImage(propertyImage22);
+            property4.addPropertyImage(propertyImage23);
+
+            PropertyImage propertyImage24 = new PropertyImage("1743301467429_a0596dd36e88cac9a64f35eaf1d8ce71-cc_ft_960.webp");
+            PropertyImage propertyImage25 = new PropertyImage("1743301467429_e433d1c2b82fd5ca765a330996a33b8b-cc_ft_960.webp");
+            PropertyImage propertyImage26 = new PropertyImage("1743301467430_35771fac6f65e303b0aae04797434661-cc_ft_960.webp");
+            PropertyImage propertyImage27 = new PropertyImage("1743301467430_383e06b5c9eaa15362db824c9315bb48-cc_ft_960.webp");
+            PropertyImage propertyImage28 = new PropertyImage("1743301467430_445fa915603a0172fcc33ab2f4bffff5-cc_ft_960.webp");
+
+            property5.addPropertyImage(propertyImage24);
+            property5.addPropertyImage(propertyImage25);
+            property5.addPropertyImage(propertyImage26);
+            property5.addPropertyImage(propertyImage27);
+            property5.addPropertyImage(propertyImage28);
+
+            PropertyImage propertyImage29 = new PropertyImage("1743301628478_038333ffc0b2ab9b3d4beee098815cd1-cc_ft_960.webp");
+            PropertyImage propertyImage30 = new PropertyImage("1743301628479_e89f81a9e0c787d35f53786a26bf94db-cc_ft_960.webp");
+            PropertyImage propertyImage31 = new PropertyImage("1743301628480_4575349ee82303eddef14e866c03d9b6-cc_ft_960.webp");
+            PropertyImage propertyImage32 = new PropertyImage("1743301628480_902a62e40dfe6025619ad874c015e85e-cc_ft_960.webp");
+            PropertyImage propertyImage33 = new PropertyImage("1743301628481_7445e48b3fef12706bda016fed9ead39-cc_ft_960.webp");
+            PropertyImage propertyImage34 = new PropertyImage("1743301628481_8e1830db57e8855cc40ab1f82e7b9ddf-cc_ft_960.webp");
+            PropertyImage propertyImage35 = new PropertyImage("1743301628481_9945c420965cf28e99533c53f919c2a8-cc_ft_960.webp");
+            PropertyImage propertyImage36 = new PropertyImage("1743301628482_4f93514962a2d6df83b282589ace1ba1-cc_ft_960.webp");
+
+            property6.addPropertyImage(propertyImage29);
+            property6.addPropertyImage(propertyImage30);
+            property6.addPropertyImage(propertyImage31);
+            property6.addPropertyImage(propertyImage32);
+            property6.addPropertyImage(propertyImage33);
+            property6.addPropertyImage(propertyImage34);
+            property6.addPropertyImage(propertyImage35);
+            property6.addPropertyImage(propertyImage36);
+
+            PropertyImage propertyImage37 = new PropertyImage("1743301809073_6002383c7e5af148dbf7865834c9d978-cc_ft_960.webp");
+            PropertyImage propertyImage38 = new PropertyImage("1743301809073_677b8026a3951bb4dddd94cc39af7c39-cc_ft_960.webp");
+            PropertyImage propertyImage39 = new PropertyImage("1743301809074_4619a01b6891e0801336c0705ab189ef-cc_ft_960.webp");
+            PropertyImage propertyImage40 = new PropertyImage("1743301809074_a12a500ba769699bc054ea0ce703e52c-cc_ft_960.webp");
+            PropertyImage propertyImage41 = new PropertyImage("1743301809074_cac06501b21dfee3dc57906057bcc348-cc_ft_960.webp");
+            PropertyImage propertyImage42 = new PropertyImage("1743301809075_0e9427333a0d908161e5147b7dc123ee-cc_ft_960.webp");
+
+            property7.addPropertyImage(propertyImage37);
+            property7.addPropertyImage(propertyImage38);
+            property7.addPropertyImage(propertyImage39);
+            property7.addPropertyImage(propertyImage40);
+            property7.addPropertyImage(propertyImage41);
+            property7.addPropertyImage(propertyImage42);
+
+            PropertyImage propertyImage43 = new PropertyImage("1743302048220_02499d07b48dce810e28dea78a5e026f-cc_ft_960.webp");
+            PropertyImage propertyImage44 = new PropertyImage("1743302048220_d420e4ce5c58d33e2b36b4e90fb5c56d-cc_ft_960.webp");
+            PropertyImage propertyImage45 = new PropertyImage("1743302048221_88838f14535dd65a2cb177a59669b281-cc_ft_960.webp");
+            PropertyImage propertyImage46 = new PropertyImage("1743302048223_eddb73c7118ac6f157503cc1218ab8e5-cc_ft_960.webp");
+            PropertyImage propertyImage47 = new PropertyImage("1743302048225_4d8c640575f652c14501094280ca42b3-cc_ft_960.webp");
+            PropertyImage propertyImage48 = new PropertyImage("1743302048225_53c34c82cf7f09148a98c1ad4bf8fdd2-cc_ft_960.webp");
+
+            property8.addPropertyImage(propertyImage43);
+            property8.addPropertyImage(propertyImage44);
+            property8.addPropertyImage(propertyImage45);
+            property8.addPropertyImage(propertyImage46);
+            property8.addPropertyImage(propertyImage47);
+            property8.addPropertyImage(propertyImage48);
+
+            PropertyImage propertyImage49 = new PropertyImage("1743302255449_cf806ba37db343ee7f0ee51d39252135-cc_ft_960.webp");
+            PropertyImage propertyImage50 = new PropertyImage("1743302255450_02be17d8f9ac024cf482014e592e180d-cc_ft_960.webp");
+            PropertyImage propertyImage51 = new PropertyImage("1743302255450_4cbdcdfef821e5dc91e7751514c6d68e-cc_ft_960.webp");
+            PropertyImage propertyImage52 = new PropertyImage("1743302255450_f957316337dc3918f40f7cd7383eecbf-cc_ft_960.webp");
+            PropertyImage propertyImage53 = new PropertyImage("1743302255451_77be1d31e0ad3589d2bb47f7f85b924f-cc_ft_960.webp");
+            PropertyImage propertyImage54 = new PropertyImage("1743302255451_8eb8c6eceb0e3bea3cdb9c2e9793d4e5-cc_ft_960.webp");
+            PropertyImage propertyImage55 = new PropertyImage("1743302255451_b31d1be54f40e40242f5d5596252db0c-cc_ft_960.webp");
+
+            property9.addPropertyImage(propertyImage49);
+            property9.addPropertyImage(propertyImage50);
+            property9.addPropertyImage(propertyImage51);
+            property9.addPropertyImage(propertyImage52);
+            property9.addPropertyImage(propertyImage53);
+            property9.addPropertyImage(propertyImage54);
+            property9.addPropertyImage(propertyImage55);
+
+            PropertyImage propertyImage56 = new PropertyImage("1743384015245_6a9c75de2a1a1b59e7ffb67666e34f21-cc_ft_960.webp");
+            PropertyImage propertyImage57 = new PropertyImage("1743384015263_c8b7f3395049c85c63629545f9b7c628-cc_ft_960.webp");
+            PropertyImage propertyImage58 = new PropertyImage("1743384015264_4208506e92354c9bbf08264f52214443-cc_ft_960.webp");
+            PropertyImage propertyImage59 = new PropertyImage("1743384015264_57e9193e3d81780a668bc762f2662ce1-cc_ft_960.webp");
+            PropertyImage propertyImage60 = new PropertyImage("1743384015265_feea5afd5f1e1d5ac49cbabb52ab9de0-cc_ft_960.webp");
+            PropertyImage propertyImage61 = new PropertyImage("1743384015266_f1ab08cd9526db6b89869706e2326957-cc_ft_960.webp");
+
+            property10.addPropertyImage(propertyImage56);
+            property10.addPropertyImage(propertyImage57);
+            property10.addPropertyImage(propertyImage58);
+            property10.addPropertyImage(propertyImage59);
+            property10.addPropertyImage(propertyImage60);
+            property10.addPropertyImage(propertyImage61);
+
+            PropertyImage propertyImage62 = new PropertyImage("1743384199295_4542114353ac37b6202a6de33663be81-cc_ft_960.webp");
+            PropertyImage propertyImage63 = new PropertyImage("1743384199295_a55bd3c3af04d6f7ac3807af405524ae-cc_ft_960.webp");
+            PropertyImage propertyImage64 = new PropertyImage("1743384199296_210172c41c26c079efc76d51d593a82b-cc_ft_960.webp");
+            PropertyImage propertyImage65 = new PropertyImage("1743384199296_39dc5cf00542133c4df96861e635f7a7-cc_ft_960.webp");
+            PropertyImage propertyImage66 = new PropertyImage("1743384199296_8dc571649cf4b989fd10e1fda3aa1419-cc_ft_960.webp");
+            PropertyImage propertyImage67 = new PropertyImage("1743384199297_055b93946d56b5a3f21453e95116e71c-cc_ft_960.webp");
+            PropertyImage propertyImage68 = new PropertyImage("1743384199297_4fe190c6aef86b5e0aaa0b4fe47ae719-cc_ft_960.webp");
+
+            property11.addPropertyImage(propertyImage62);
+            property11.addPropertyImage(propertyImage63);
+            property11.addPropertyImage(propertyImage64);
+            property11.addPropertyImage(propertyImage65);
+            property11.addPropertyImage(propertyImage66);
+            property11.addPropertyImage(propertyImage67);
+            property11.addPropertyImage(propertyImage68);
+
+            PropertyImage propertyImage69 = new PropertyImage("1743384392201_24210295f2d05ba693adc25d1c896206-cc_ft_960.webp");
+            PropertyImage propertyImage70 = new PropertyImage("1743384392202_2b4d95e3030041acff0ccb66cd4bfd36-cc_ft_960.webp");
+            PropertyImage propertyImage71 = new PropertyImage("1743384392202_2b59c2456dce88ba36b7bcfbbdf0f85f-cc_ft_960.webp");
+            PropertyImage propertyImage72 = new PropertyImage("1743384392202_4a12de4cf2f21dea63628868986ae31b-cc_ft_960.webp");
+            PropertyImage propertyImage73 = new PropertyImage("1743384392203_240789fdb44d85f5c5a8a72de4db20e3-cc_ft_960.webp");
+            PropertyImage propertyImage74 = new PropertyImage("1743384392203_4c55a56e9e17f85f2ec6eeb0086ec5d0-cc_ft_960.webp");
+            PropertyImage propertyImage75 = new PropertyImage("1743384392204_db5691f807cab5e67c31f141fc3f6ac7-cc_ft_960.webp");
+
+            property12.addPropertyImage(propertyImage69);
+            property12.addPropertyImage(propertyImage70);
+            property12.addPropertyImage(propertyImage71);
+            property12.addPropertyImage(propertyImage72);
+            property12.addPropertyImage(propertyImage73);
+            property12.addPropertyImage(propertyImage74);
+            property12.addPropertyImage(propertyImage75);
+
+            PropertyImage propertyImage76 = new PropertyImage("1743387717563_1b52d279e85865c7f0bf096a15389cde-cc_ft_960.webp");
+            PropertyImage propertyImage77 = new PropertyImage("1743387717569_3bd5e5aa31981523260b921b90147af1-cc_ft_960.webp");
+            PropertyImage propertyImage78 = new PropertyImage("1743387717569_ef8752d95d4a035171a9e68ea1b931b3-cc_ft_960.webp");
+            PropertyImage propertyImage79 = new PropertyImage("1743387717570_a1002e32f5837499940cb388fd9564e9-cc_ft_960.webp");
+            PropertyImage propertyImage80 = new PropertyImage("1743387717571_fb9d6f09ff74869a68e130639b4a6656-cc_ft_960.webp");
+            PropertyImage propertyImage81 = new PropertyImage("1743387717572_4e76c9ea759f17c5117146b8e3767d59-cc_ft_960.webp");
+
+            property13.addPropertyImage(propertyImage76);
+            property13.addPropertyImage(propertyImage77);
+            property13.addPropertyImage(propertyImage78);
+            property13.addPropertyImage(propertyImage79);
+            property13.addPropertyImage(propertyImage80);
+            property13.addPropertyImage(propertyImage81);
+
+            PropertyImage propertyImage82 = new PropertyImage("1743387872830_3d90623319bb81e1fc9981458177dfbe-cc_ft_960.webp");
+            PropertyImage propertyImage83 = new PropertyImage("1743387872831_52a0b90d5ad6706b893bde00716c33d3-cc_ft_960.webp");
+            PropertyImage propertyImage84 = new PropertyImage("1743387872832_02f4e0b3bf227e23803789cc22b57a51-cc_ft_960.webp");
+            PropertyImage propertyImage85 = new PropertyImage("1743387872832_09ed819d77efdcc01b00c5aabbaea793-cc_ft_960.webp");
+            PropertyImage propertyImage86 = new PropertyImage("1743387872832_1dbb545e72db17e3e4f71782d804f150-cc_ft_960.webp");
+            PropertyImage propertyImage87 = new PropertyImage("1743387872833_9f3d06c29900d8b66f2b0cb1711621e6-cc_ft_960.webp");
+            PropertyImage propertyImage88 = new PropertyImage("1743387872833_d6d09d6b56a9ada275beac058cd819ea-cc_ft_960.webp");
+
+            property14.addPropertyImage(propertyImage82);
+            property14.addPropertyImage(propertyImage83);
+            property14.addPropertyImage(propertyImage84);
+            property14.addPropertyImage(propertyImage85);
+            property14.addPropertyImage(propertyImage86);
+            property14.addPropertyImage(propertyImage87);
+            property14.addPropertyImage(propertyImage88);
+
+            PropertyImage propertyImage89 = new PropertyImage("1743388060454_c24b273254041b893ccd6692111b5200-cc_ft_960.webp");
+            PropertyImage propertyImage90 = new PropertyImage("1743388060455_79189db1b8f663642e731eb0b01b5f39-cc_ft_960.webp");
+            PropertyImage propertyImage91 = new PropertyImage("1743388060456_08d55c9fc87e4f22d67a478fab4c9a03-cc_ft_960.webp");
+            PropertyImage propertyImage92 = new PropertyImage("1743388060456_7e771c0fb66cd751539d8d806f0ba148-cc_ft_960.webp");
+            PropertyImage propertyImage93 = new PropertyImage("1743388060457_0164127f87e51ea7a12bd2c305b6c2e0-cc_ft_960.webp");
+            PropertyImage propertyImage94 = new PropertyImage("1743388060457_a7cef31db25ea18719d4733f0b95b223-cc_ft_960.webp");
+            PropertyImage propertyImage95 = new PropertyImage("1743388060457_ee5061af173e2bf0aad53eb5f26cf706-cc_ft_960.webp");
+
+            property15.addPropertyImage(propertyImage89);
+            property15.addPropertyImage(propertyImage90);
+            property15.addPropertyImage(propertyImage91);
+            property15.addPropertyImage(propertyImage92);
+            property15.addPropertyImage(propertyImage93);
+            property15.addPropertyImage(propertyImage94);
+            property15.addPropertyImage(propertyImage95);
+
+            PropertyImage propertyImage96 = new PropertyImage("1743992061456_5817c06a023247878cad80b13437a344-cc_ft_960.webp");
+            PropertyImage propertyImage97 = new PropertyImage("1743992061461_7949f19564896909d78f3fcaff95b1fd-cc_ft_960.webp");
+            PropertyImage propertyImage98 = new PropertyImage("1743992061461_f16b81fd636cc523ace9d3bb0256552d-cc_ft_960.webp");
+            PropertyImage propertyImage99 = new PropertyImage("1743992061462_f727e2747ba462aa10058f56caa3557e-cc_ft_960.webp");
+            PropertyImage propertyImage100 = new PropertyImage("1743992061464_1fd8ed76ab9561d8997f2021f2fa36be-cc_ft_960.webp");
+            PropertyImage propertyImage101 = new PropertyImage("1743992061464_eebaa9c584979606b61e3357c48d8547-cc_ft_960.webp");
+            PropertyImage propertyImage102 = new PropertyImage("1743992061465_30d9ae794d238c468c93c24e75f606ec-cc_ft_960.webp");
+
+            property16.addPropertyImage(propertyImage96);
+            property16.addPropertyImage(propertyImage97);
+            property16.addPropertyImage(propertyImage98);
+            property16.addPropertyImage(propertyImage99);
+            property16.addPropertyImage(propertyImage100);
+            property16.addPropertyImage(propertyImage101);
+            property16.addPropertyImage(propertyImage102);
+
+            PropertyImage propertyImage103 = new PropertyImage("1743992242724_0ca592349432a46fba99299c74267220-cc_ft_960.webp");
+            PropertyImage propertyImage104 = new PropertyImage("1743992242724_2ae7e5f1f89fcfb262f2088c53cce3b9-cc_ft_960.webp");
+            PropertyImage propertyImage105 = new PropertyImage("1743992242725_50e9c8299c9368422483ba4dff253098-cc_ft_960.webp");
+            PropertyImage propertyImage106 = new PropertyImage("1743992242725_54ea1b70cede8d606beecadf2b9c2f28-cc_ft_960.webp");
+            PropertyImage propertyImage107 = new PropertyImage("1743992242726_9ff251395613a68239c6820f4daea338-cc_ft_960.webp");
+            PropertyImage propertyImage108 = new PropertyImage("1743992242727_1376aeceae202e2bad77219dc8190cdd-cc_ft_960.webp");
+
+            property17.addPropertyImage(propertyImage103);
+            property17.addPropertyImage(propertyImage104);
+            property17.addPropertyImage(propertyImage105);
+            property17.addPropertyImage(propertyImage106);
+            property17.addPropertyImage(propertyImage107);
+            property17.addPropertyImage(propertyImage108);
+
             propertyRepository.saveAll(List.of(property1, property2, property3,
                     property4, property5, property6, property7, property8, property9,
                     property10, property11, property12, property13, property14,
                     property15, property16, property17));
 
-            System.out.println("🟢 Properties inserted into database.");
+            System.out.println("🟢 Properties and Property Images inserted into database.");
 
         }
-
     }
 }

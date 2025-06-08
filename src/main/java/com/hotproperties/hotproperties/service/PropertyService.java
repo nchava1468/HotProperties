@@ -9,4 +9,8 @@ public interface PropertyService {
     List<Property> findAllProperties();
 
     Property findById(Long id);
+
+    List<Property> findAll();
+
+    void addNewProperty(Property property);
 }

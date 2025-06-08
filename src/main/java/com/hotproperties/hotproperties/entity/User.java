@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users")  // avoid using "user" — it's a reserved keyword in many SQL dialects
+@Table(name = "users")
 public class User {
 
     @Id
@@ -28,11 +28,11 @@ public class User {
     @Column(nullable = false)
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)  // EAGER fetch to load roles during login
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
+        name = "user_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
 
@@ -42,7 +42,6 @@ public class User {
     private List<Property> properties = new ArrayList<>();
      */
 
-    // --- Constructors ---
     public User() {}
 
     public User(String username, String password, String firstName, String lastName,
@@ -55,7 +54,6 @@ public class User {
         this.roles = roles;
     }
 
-    // --- Getters and Setters ---
     public Long getId() {
         return id;
     }
@@ -103,19 +101,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    /*
-    public List<User> getSubordinates() {
-        return subordinates;
-    }
-
-    public void setSubordinates(List<User> subordinates) {
-        this.subordinates = subordinates;
-    }
-
-    public void addEmployee(User u1) {
-        this.subordinates.add(u1);
-        u1.setManager(this);
-    } */
 }
 

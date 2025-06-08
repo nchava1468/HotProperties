@@ -13,6 +13,9 @@
 </div>
 
 <div class="container">
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
+    </div>
     <h2>User Management</h2>
     <table>
         <thead>

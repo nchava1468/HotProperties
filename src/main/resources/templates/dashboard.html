@@ -10,6 +10,9 @@
 </div>
 
 <div class="dashboard-container">
+    <div th:if="${successMessage}" class="success">
+        <p th:text="${successMessage}"></p>
+    </div>
     <h1 th:text="'Hello, ' + ${user.firstName} + ' ' + ${user.lastName} + '!'">Hello!</h1>
     <p>Your role: <strong th:each="role : ${user.roles}" th:text="${role.name.substring(5)}">NONE</strong></p>
 

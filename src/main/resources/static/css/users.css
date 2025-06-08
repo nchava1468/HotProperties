@@ -101,3 +101,10 @@ tr:nth-child(even) {
 .back-link a:hover {
     text-decoration: underline;
 }
+
+.success {
+    color: green;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+    text-align: center;
+}

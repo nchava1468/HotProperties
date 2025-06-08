@@ -28,14 +28,19 @@
         <a th:href="@{/properties/list}" class="cancel-link">Clear</a>
     </form>
 
-    <div th:each="property : ${properties}" class="property-card" style="display: flex; border: 1px solid #ccc; border-radius: 8px; margin: 20px 0; padding: 15px;">
-    <div>
-        <a th:text="${property.title}" class="property-title"></a>
-        <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
-        <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
-        <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
-        <a th:href="@{/properties/view/{id}(id=${property.id})}" class="btn-link">View Details</a>
-    </div>
+    <div th:each="property : ${properties}" class="property-card">
+        <div class="image-container">
+            <img th:if="${property.propertyImages.size() > 0}"
+                 th:src="@{'/property-images/' + ${property.propertyImages.get(0).fileName}}" alt="Property Image"
+                 class="property-image" />
+        </div>
+        <div class="property-details">
+            <a th:text="${property.title}" class="property-title"></a>
+            <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
+            <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
+            <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
+            <a th:href="@{/properties/view/{id}(id=${property.id})}" class="btn-link">View Details</a>
+        </div>
     </div>
 
     <div class="back-link">
