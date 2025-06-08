@@ -13,7 +13,7 @@
 </div>
 
 <div class="container">
-    <h2>Manage Your Properties</h2>
+    <h2>Manage Properties</h2>
 
     <table>
         <thead>
@@ -29,10 +29,15 @@
         <tbody>
         <tr th:each="property : ${properties}">
             <td th:text="${property.title}"></td>
-            <td th:text="${property.price}"></td>
+            <td th:text="${#numbers.formatCurrency(property.price)}"></td>
             <td th:text="${property.location}"></td>
             <td th:text="${property.size + ' sq ft'}"></td>
-            <td class="images-cell">
+            <td class="images-cell" th:if="${property.propertyImages.size() > 0}">
+                <div th:each="img : ${property.propertyImages}">
+                    <img th:src="@{'/property-images/' + ${img.fileName}}" alt="Property Image" class="image-view" />
+                </div>
+            </td>
+            <td class="images-cell" th:if="${property.propertyImages.size() == 0}">
                 <span>No images</span>
             </td>
             <td>
