@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Agent</title>
+    <link rel="stylesheet" th:href="@{/css/create-agent.css}" />
+</head>
+<body>
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
+    <a th:href="@{/dashboard}" class="dashboard-btn">&#8592; Dashboard</a>
+</div>
+<div class="main-bg">
+    <div class="card">
+        <h2>Create a New Agent</h2>
+        
+        <div class="error-message" th:if="${error}" th:text="${error}"></div>
+
+        <div class="success-message" th:if="${success}" th:text="${success}"></div>
+
+        <form th:action="@{/admin/create-agent}" th:object="${agent}" method="post">
+            <div class="form-group">
+                <input type="text" th:field="*{username}" placeholder="Username" required/>
+                <small class="form-text">Choose a unique username for the agent</small>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" th:field="*{firstName}" placeholder="First Name" required/>
+            </div>
+            
+            <div class="form-group">
+                <input type="text" th:field="*{lastName}" placeholder="Last Name" required/>
+            </div>
+            
+            <div class="form-group">
+                <input type="email" th:field="*{email}" placeholder="Email" required/>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" th:field="*{password}" placeholder="Password" required/>
+                <small class="form-text">Password should be at least 6 characters long</small>
+            </div>
+            
+            <button type="submit" class="create-btn">Create Agent</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html> 

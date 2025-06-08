@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}" />
+</head>
+<body>
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
+</div>
+
+<div class="dashboard-container">
+    <h1 th:text="'Hello, ' + ${user.firstName} + ' ' + ${user.lastName} + '!'">Hello!</h1>
+    <p>Your role: <strong th:each="role : ${user.roles}" th:text="${role.name.substring(5)}">NONE</strong></p>
+
+    <nav class="nav-links">
+
+        <a th:href="@{/users/profile}">My Profile</a>
+
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/users}">Manage Users</a>
+        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" th:href="@{/admin/create-agent}">Create Agent</a>
+
+        <a th:if="${#authorization.expression('hasRole(''AGENT'')')}" th:href="@{/agent/listings}">Manage Listings</a>
+        <a th:if="${#authorization.expression('hasRole(''AGENT'')')}" th:href="@{/agent/add-property}">Add New Property</a>
+
+        <a th:if="${#authorization.expression('hasRole(''BUYER'')')}" th:href="@{/properties}">Browse Properties</a>
+
+    </nav>
+
+    <form th:action="@{/auth/logout}" method="post">
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
+</div>
+</body>
+</html>

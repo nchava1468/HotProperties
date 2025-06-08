@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Property</title>
+  <link rel="stylesheet" th:href="@{/css/add-property.css}">
+</head>
+<body>
+<div class="header">
+  <img src="/images/logo.png" class="logo" alt="Hot Properties Logo">
+  <a class="dashboard-link" th:href="@{/dashboard}">← Dashboard</a>
+</div>
+
+<div class="form-container">
+  <h2>Add New Property</h2>
+  <form th:action="@{/agent/properties/add}" method="post" enctype="multipart/form-data">
+    <label>Title:</label>
+    <input type="text" name="title" required>
+
+    <label>Price:</label>
+    <input type="number" name="price" step="0.01" value="0.0" required>
+
+    <label>Location:</label>
+    <input type="text" name="location" required>
+
+    <label>Size (sq ft):</label>
+    <input type="text" name="size" required>
+
+    <label>Description:</label>
+    <textarea name="description" rows="4"></textarea>
+
+    <label>Upload Property Images:</label>
+    <input type="file" name="images" multiple>
+
+    <button type="submit">Add Property</button>
+  </form>
+
+  <div class="back-link">
+    <a th:href="@{/dashboard}">Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>
