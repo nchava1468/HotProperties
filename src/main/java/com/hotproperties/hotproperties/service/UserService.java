@@ -8,40 +8,29 @@ import java.util.List;
 
 public interface UserService {
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     void prepareDashboardModel(Model model);
-
-    //@PreAuthorize("isAuthenticated()")
-    //void prepareProfileModel(Model model);
-
-    //@PreAuthorize("isAuthenticated()")
-    //void prepareSettingsModel(Model model);
-
-    //@PreAuthorize("isAuthenticated()")
-    //void updateUserSettings(User updatedUser, String password, List<Long> addIds, List<Long> removeIds);
 
     @PreAuthorize("hasRole('ADMIN')")
     List<User> getAllUsers();
-
-    //@PreAuthorize("hasRole('MANAGER')")
-    //List<User> getTeamForCurrentManager();
 
     //String storeProfilePicture(Long userId, MultipartFile file);
 
     User registerNewUser(User user, List<String> roleNames);
 
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     void updateUser(User user);
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     User getCurrentUser();
 
     String getRoleForUser(String username);
 
+    @PreAuthorize("hasRole('ADMIN')")
     void deleteUserById(Long id);
 
     boolean existsByUsername(String username);
 
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     void prepareProfileModel(Model model);
-
-    //void createNewAgent(User agent);
 }

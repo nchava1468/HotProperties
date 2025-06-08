@@ -29,11 +29,6 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<Property> findAll() {
-        return propertyRepository.findAll();
-    }
-
-    @Override
     public void addNewProperty(Property property) {
         validateTitle(property.getTitle());
         validatePrice(property.getPrice());

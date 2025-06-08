@@ -2,11 +2,8 @@ package com.hotproperties.hotproperties.controller;
 
 import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.User;
-import com.hotproperties.hotproperties.repository.PropertyRepository;
-import com.hotproperties.hotproperties.service.AuthService;
 import com.hotproperties.hotproperties.service.PropertyService;
 import com.hotproperties.hotproperties.service.UserService;
-import com.hotproperties.hotproperties.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,18 +16,17 @@ import java.util.List;
 @Controller
 public class UserController {
 
-    private final AuthService authService;
     private final UserService userService;
     private final PropertyService propertyService;
 
     @Autowired
-    public UserController(AuthService authService, UserService userService,PropertyService propertyService) {
-        this.authService = authService;
+    public UserController(UserService userService, PropertyService propertyService) {
         this.userService = userService;
         this.propertyService = propertyService;
     }
 
     @GetMapping("/dashboard")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String dashboard(Model model, RedirectAttributes redirectAttributes) {
         try {
             userService.prepareDashboardModel(model);
@@ -42,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/users/profile")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String profile(Model model, RedirectAttributes redirectAttributes) {
         try {
             userService.prepareProfileModel(model);
@@ -53,12 +50,14 @@ public class UserController {
     }
 
     @GetMapping("/users/profile/edit")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String editProfile(Model model) {
         model.addAttribute("user", new User());
         return "edit-profile";
     }
 
     @PostMapping("/users/profile/edit")
+    @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String saveEditProfile(@ModelAttribute("user") User updatedUser,
                                   @RequestParam(required = false) String firstName,
                                   @RequestParam(required = false) String lastName,
@@ -87,6 +86,7 @@ public class UserController {
     // === ADMIN ===
 
     @GetMapping("/admin/users")
+    @PreAuthorize("hasRole('ADMIN')")
     public String viewAllUsers(Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("users", userService.getAllUsers());
@@ -98,6 +98,7 @@ public class UserController {
     }
 
     @PostMapping("/admin/delete-user/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@PathVariable Long id,
                              RedirectAttributes redirectAttributes) {
         try {
@@ -110,12 +111,14 @@ public class UserController {
     }
 
     @GetMapping("/admin/create-agent")
+    @PreAuthorize("hasRole('ADMIN')")
     public String showCreateAgentForm(Model model) {
         model.addAttribute("agent", new User());
         return "create-agent";
     }
 
     @PostMapping("/admin/create-agent")
+    @PreAuthorize("hasRole('ADMIN')")
     public String createAgent(@ModelAttribute("agent") User agent,
                               RedirectAttributes redirectAttributes) {
         try {
@@ -136,7 +139,7 @@ public class UserController {
     @GetMapping("/agent/listings")
     @PreAuthorize("hasRole('AGENT')")
     public String showAgentListings(Model model) {
-        List<Property> properties = propertyService.findAll();
+        List<Property> properties = propertyService.findAllProperties();
         model.addAttribute("properties", properties);
         return "manage-properties";
     }
