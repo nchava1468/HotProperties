@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Properties</title>
+    <link rel="stylesheet" th:href="@{/css/properties.css}" />
+</head>
+<body>
+
+<div class="header">
+    <img src="/images/logo.png" alt="HotProperties Logo" class="logo" />
+    <a th:href="@{/dashboard}" class="dashboard-link">&#8592; Dashboard</a>
+</div>
+
+<div class="container">
+    <h2>Available Properties (<span th:text="${#lists.size(properties)}"></span>)</h2>
+
+    <form method="get" th:action="@{/properties/search}" class="search-form">
+        <input type="text" name="zip" placeholder="Zip Code" class="form-input" />
+        <input type="number" name="minSqFt" placeholder="Min Sq Ft" class="form-input" />
+        <input type="number" name="minPrice" placeholder="Min Price" class="form-input" />
+        <input type="number" name="maxPrice" placeholder="Max Price" class="form-input" />
+        <select name="sort" class="form-select">
+            <option value="asc">Price: Low to High</option>
+            <option value="desc">Price: High to Low</option>
+        </select>
+        <button type="submit" class="btn">Search</button>
+        <a th:href="@{/properties/list}" class="cancel-link">Clear</a>
+    </form>
+
+    <div th:each="property : ${properties}" class="property-card" style="display: flex; border: 1px solid #ccc; border-radius: 8px; margin: 20px 0; padding: 15px;">
+    <div>
+        <a th:href="@{/properties/{id}(id=${property.id})}" th:text="${property.title}" style="font-size: 1.2em; font-weight: bold; color: #007BFF;"></a>
+        <p><strong>Price:</strong> <span th:text="${#numbers.formatCurrency(property.price)}"></span></p>
+        <p><strong>Location:</strong> <span th:text="${property.location}"></span></p>
+        <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
+        <a th:href="@{/properties/{id}(id=${property.id})}" class="btn-link">View Details</a>
+    </div>
+    </div>
+
+    <div class="back-link">
+        <a th:href="@{/dashboard}">&#8592; Back to Dashboard</a>
+    </div>
+</div>
+
+</body>
+</html>
