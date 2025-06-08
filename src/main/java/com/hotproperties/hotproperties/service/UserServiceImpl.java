@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User updatedUser) {
-
         User user = getCurrentUserContext().user();
 
         validateFirstName(updatedUser.getFirstName());
@@ -67,80 +66,6 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
     }
-/*
-    @Override
-    public void prepareProfileModel(Model model) {
-        model.addAttribute("user", getCurrentUserContext().user());
-    }
-
-    @Override
-    public void prepareSettingsModel(Model model) {
-        CurrentUserContext context = getCurrentUserContext();
-        User user = context.user();
-        Authentication auth = context.auth();
-
-        model.addAttribute("user", user);
-
-        boolean isManager = auth.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_MANAGER"));
-
-        if (isManager) {
-            List<User> currentEmployees = userRepository.findByManager(user);
-            List<User> availableUsers = userRepository.findByManagerIsNull().stream()
-                    .filter(u -> !u.getUsername().equals(user.getUsername()))
-                    .collect(Collectors.toList());
-
-            model.addAttribute("currentEmployees", currentEmployees);
-            model.addAttribute("availableUsers", availableUsers);
-        }
-    }
-
-    @Override
-    public void updateUserSettings(User updatedUser, String password, List<Long> addIds, List<Long> removeIds) {
-        User user = getCurrentUserContext().user();
-
-        user.setFirstName(updatedUser.getFirstName());
-        user.setLastName(updatedUser.getLastName());
-        user.setEmail(updatedUser.getEmail());
-
-        if (password != null && !password.isBlank()) {
-            user.setPassword(passwordEncoder.encode(password));
-        }
-
-        if (addIds != null) {
-            for (Long empId : addIds) {
-                User emp = userRepository.findById(empId).orElseThrow();
-                emp.setManager(user);
-                userRepository.save(emp);
-            }
-        }
-
-        if (removeIds != null) {
-            for (Long empId : removeIds) {
-                User emp = userRepository.findById(empId).orElseThrow();
-                emp.setManager(null);
-                userRepository.save(emp);
-            }
-        }
-
-        userRepository.save(user);
-    }
-
-    @Override
-    public User registerNewUser(User user, List<String> roleNames) {
-        if (user.getUsername() == null || user.getUsername().isBlank()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
-        }
-
-        Set<Role> roles = roleNames.stream()
-                .map(roleName -> roleRepository.findByName(roleName)
-                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
-                .collect(Collectors.toSet());
-
-        user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }*/
 
     public User registerNewUser(User user, List<String> roles) {
 
@@ -160,18 +85,11 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-
-
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAllByOrderByLastNameAsc();
     }
 /*
-    @Override
-    public List<User> getTeamForCurrentManager() {
-        return userRepository.findByManager(getCurrentUserContext().user());
-    }
-
     @Override
     public String storeProfilePicture(Long userId, MultipartFile file) {
         try {
@@ -203,9 +121,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to store profile picture", ex);
         }
     }
-*/
-
-
+    */
 
     @Override
     public User getCurrentUser() {
@@ -222,7 +138,7 @@ public class UserServiceImpl implements UserService {
         return user.getRoles().stream()
                 .map(Role::getName)
                 .findFirst()
-                .orElse("ROLE_USER");
+                .orElse("ROLE_BUYER");
     }
 
     @Override
@@ -234,37 +150,6 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
-
-
-/*
-    @Override
-    public void createNewAgent(User agent) {
-        if (agent.getUsername() == null || agent.getUsername().trim().isEmpty()) {
-            throw new IllegalArgumentException("Username is required");
-        }
-
-        if (agent.getPassword() == null || agent.getPassword().trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
-        }
-
-        if (agent.getEmail() == null || agent.getEmail().trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
-        }
-
-        if (agent.getFirstName() == null || agent.getFirstName().trim().isEmpty()) {
-            throw new IllegalArgumentException("First name is required");
-        }
-
-        if (agent.getLastName() == null || agent.getLastName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Last name is required");
-        }
-
-        if (existsByUsername(agent.getUsername())) {
-            throw new IllegalArgumentException("Username already exists");
-        }
-
-        registerNewUser(agent, List.of("ROLE_AGENT"));
-    }*/
 
     // === VALIDATION METHODS ===
 
@@ -303,5 +188,4 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Exactly one role must be assigned");
         }
     }
-
 }

@@ -1,9 +1,14 @@
 package com.hotproperties.hotproperties.controller;
 
+import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.repository.PropertyRepository;
 import com.hotproperties.hotproperties.service.AuthService;
+import com.hotproperties.hotproperties.service.PropertyService;
 import com.hotproperties.hotproperties.service.UserService;
 import com.hotproperties.hotproperties.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +21,13 @@ public class UserController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final UserRepository userRepository;
+    private final PropertyService propertyService;
 
-    public UserController(AuthService authService, UserService userService, UserRepository userRepository) {
+    @Autowired
+    public UserController(AuthService authService, UserService userService,PropertyService propertyService) {
         this.authService = authService;
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.propertyService = propertyService;
     }
 
     @GetMapping("/dashboard")
@@ -96,7 +102,7 @@ public class UserController {
                              RedirectAttributes redirectAttributes) {
         try {
             userService.deleteUserById(id);
-            redirectAttributes.addFlashAttribute("success", "User deleted successfully");
+            redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error deleting user: " + e.getMessage());
         }
@@ -114,7 +120,7 @@ public class UserController {
                               RedirectAttributes redirectAttributes) {
         try {
             userService.registerNewUser(agent, List.of("ROLE_AGENT"));
-            redirectAttributes.addFlashAttribute("success", "Agent created successfully!");
+            redirectAttributes.addFlashAttribute("successMessage", "Agent created successfully!");
             return "redirect:/dashboard";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -125,6 +131,37 @@ public class UserController {
         }
     }
 
+    // === AGENT ===
 
+    @GetMapping("/agent/listings")
+    @PreAuthorize("hasRole('AGENT')")
+    public String showAgentListings(Model model) {
+        List<Property> properties = propertyService.findAll();
+        model.addAttribute("properties", properties);
+        return "manage-properties";
+    }
 
+    @GetMapping("/agent/add-property")
+    @PreAuthorize("hasRole('AGENT')")
+    public String showAddPropertyForm() {
+        return "add-property";
+    }
+
+    @PostMapping("/agent/properties/add")
+    @PreAuthorize("hasRole('AGENT')")
+    public String addProperty(
+            @RequestParam String title,
+            @RequestParam double price,
+            @RequestParam String location,
+            @RequestParam String size,
+            @RequestParam(required = false) String description,
+            RedirectAttributes redirectAttributes
+    ) {
+        Integer sizeInt = Integer.valueOf(size);
+        Property property = new Property(title, price, description, location, sizeInt);
+
+        propertyService.addNewProperty(property);
+        redirectAttributes.addFlashAttribute("success", "Property added successfully!");
+        return "redirect:/agent/listings";
+    }
 }

@@ -22,8 +22,17 @@
             <p><strong>Sq. Ft.:</strong> <span th:text="${property.size}"></span></p>
             <p><strong>Description:</strong> <span th:text="${property.description}"></span></p>
         </div>
+        <div>
+            <div class="images-section">
+                <h1>Property Images</h1>
+                <div class="image-gallery">
+                    <div class="property-image-wrapper" th:each="img : ${property.propertyImages}" >
+                        <img th:src="@{'/property-images/' + ${img.fileName}}" alt="Property Image" class="property-image" />
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
     <div class="back-link">
         <a th:href="@{/properties/list}">&#8592; Back to Listings</a>
     </div>

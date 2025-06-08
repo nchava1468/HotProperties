@@ -67,3 +67,28 @@ body {
     color: #007BFF;
     text-decoration: none;
 }
+
+.mages-section {
+    margin-top: 20px;
+}
+
+.image-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.property-image-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 350px;
+}
+
+.property-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+

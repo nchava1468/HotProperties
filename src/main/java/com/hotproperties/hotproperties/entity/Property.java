@@ -2,6 +2,9 @@ package com.hotproperties.hotproperties.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Property {
 
@@ -20,6 +23,9 @@ public class Property {
 
     private Integer size;
 
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<PropertyImage> propertyImages = new ArrayList<>();
+
     public Property() {}
 
     public Property(String title, double price, String description, String location, Integer size) {
@@ -28,6 +34,11 @@ public class Property {
         this.price = price;
         this.size = size;
         this.description = description;
+    }
+
+    public void addPropertyImage(PropertyImage propertyImage) {
+        propertyImages.add(propertyImage);
+        propertyImage.setProperty(this);
     }
 
     public Long getId() { return id; }
@@ -42,9 +53,16 @@ public class Property {
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
-    public int getSize() { return size; }
-    public void setSize(int size) { this.size = size; }
+    public Integer getSize() { return size; }
+    public void setSize(Integer size) { this.size = size; }
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    public List<PropertyImage> getPropertyImages() {
+        return propertyImages;
+    }
+    public void setPropertyImages(List<PropertyImage> propertyImages) {
+        this.propertyImages = propertyImages;
+    }
 }

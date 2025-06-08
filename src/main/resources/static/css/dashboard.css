@@ -56,3 +56,10 @@ body {
 .logout-btn:hover {
     background-color: #c82333;
 }
+
+.success {
+    color: green;
+    font-size: 0.95em;
+    margin-bottom: 14px;
+    text-align: center;
+}
