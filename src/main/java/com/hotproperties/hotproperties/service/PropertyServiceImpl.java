@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -101,6 +103,42 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public void deletePropertyById(Long id) {
         propertyRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Property> filterProperties(Integer zip, Integer minSqFt, Integer minPrice, Integer maxPrice, String sort) {
+
+        List<Property> properties = propertyRepository.findAll();
+        List<Property> filteredProperties = new ArrayList<>();
+
+        String zipString = (zip != null) ? zip.toString() : null;
+
+        for (Property property : properties) {
+
+            if (zipString != null && (property.getLocation() == null || !property.getLocation().contains(zipString))) {
+                continue;
+            }
+            if (minSqFt != null && property.getSize() < minSqFt) {
+                continue;
+            }
+            if (minPrice != null && property.getPrice() < minPrice) {
+                continue;
+            }
+            if (maxPrice != null && property.getPrice() > maxPrice) {
+                continue;
+            }
+            filteredProperties.add(property);
+        }
+
+        if (sort != null) {
+            if (sort.equals("asc")) {
+                filteredProperties.sort(Comparator.comparing(Property::getPrice));
+            } else if (sort.equals("desc")) {
+                filteredProperties.sort(Comparator.comparing(Property::getPrice).reversed());
+            }
+        }
+
+        return filteredProperties;
     }
 
     // === VALIDATION METHODS ===

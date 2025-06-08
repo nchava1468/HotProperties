@@ -16,7 +16,7 @@
     <h2>Available Properties (<span th:text="${#lists.size(properties)}"></span>)</h2>
 
     <form method="get" th:action="@{/properties/search}" class="search-form">
-        <input type="text" name="zip" placeholder="Zip Code" class="form-input" />
+        <input type="number" name="zip" placeholder="Zip Code" class="form-input" />
         <input type="number" name="minSqFt" placeholder="Min Sq Ft" class="form-input" />
         <input type="number" name="minPrice" placeholder="Min Price" class="form-input" />
         <input type="number" name="maxPrice" placeholder="Max Price" class="form-input" />

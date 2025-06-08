@@ -23,4 +23,6 @@ public interface PropertyService {
 
     @PreAuthorize("hasRole('AGENT')")
     void deletePropertyById(Long id);
+
+    List<Property> filterProperties(Integer zip, Integer minSqFt, Integer minPrice, Integer maxPrice, String sort);
 }
