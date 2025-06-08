@@ -150,6 +150,24 @@ public class PropertyController {
         }
     }
 
+    @PostMapping("/properties/add")
+    @PreAuthorize("hasRole('AGENT')")
+    public String addProperty(
+            @RequestParam String title,
+            @RequestParam double price,
+            @RequestParam String location,
+            @RequestParam String size,
+            @RequestParam(required = false) String description,
+            @RequestParam(value = "images", required = false) MultipartFile[] images,
+            RedirectAttributes redirectAttributes
+    ) {
+        Integer sizeInt = Integer.valueOf(size);
+        Property property = new Property(title, price, description, location, sizeInt);
+        propertyService.addNewProperty(property, images);
+        redirectAttributes.addFlashAttribute("successMessage", "Property added successfully!");
+        return "redirect:/agent/listings";
+    }
+
     @PostMapping("/favorites/delete/{id}")
     @PreAuthorize("hasRole('BUYER')")
     public String deleteFavorite(@PathVariable Long id,
