@@ -70,20 +70,16 @@ th {
     border: 1px solid #ccc;
 }
 
-.edit-btn,
-.delete-btn {
+.edit-btn {
+    background-color: #2196f3;
+    color: #fff;
+    margin-right: 8px;
     padding: 7px 14px;
     font-size: 14px;
     border: none;
     border-radius: 5px;
     text-decoration: none;
     cursor: pointer;
-}
-
-.edit-btn {
-    background-color: #2196f3;
-    color: #fff;
-    margin-right: 8px;
 }
 
 .edit-btn:hover {
@@ -93,6 +89,12 @@ th {
 .delete-btn {
     background-color: #f44336;
     color: white;
+    padding: 7px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .delete-btn:hover {
@@ -112,4 +114,14 @@ th {
 
 .back-link a:hover {
     text-decoration: underline;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.action-buttons form {
+    margin: 0;
 }

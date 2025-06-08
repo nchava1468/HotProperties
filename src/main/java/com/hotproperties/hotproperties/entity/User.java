@@ -2,7 +2,9 @@ package com.hotproperties.hotproperties.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -36,11 +38,8 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    /*
-    @OneToMany(mappedBy = "agent")
-    @JsonIgnore
-    private List<Property> properties = new ArrayList<>();
-     */
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Favorite> favorites = new ArrayList<>();
 
     public User() {}
 
@@ -52,6 +51,11 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.roles = roles;
+    }
+
+    public void addFavorite(Favorite favorite) {
+        favorites.add(favorite);
+        favorite.setUser(this);
     }
 
     public Long getId() {
@@ -100,6 +104,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Favorite> getFavorites() {
+        return favorites;
+    }
+
+    public void setFavorites(List<Favorite> favorites) {
+        this.favorites = favorites;
     }
 }
 

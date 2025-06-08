@@ -27,6 +27,7 @@
         <a th:if="${#authorization.expression('hasRole(''AGENT'')')}" th:href="@{/agent/add-property}">Add New Property</a>
 
         <a th:if="${#authorization.expression('hasRole(''BUYER'')')}" th:href="@{/properties/list}">Browse Properties</a>
+        <a th:if="${#authorization.expression('hasRole(''BUYER'')')}" th:href="@{/properties/favorites}">Saved Favorites</a>
 
     </nav>
 
