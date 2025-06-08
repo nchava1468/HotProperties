@@ -35,6 +35,9 @@
             </p>
             <a th:href="@{/properties/view/{id}(id=${favorite.property.id})}" class="btn-link">View Details</a>
         </div>
+        <form th:action="@{/favorites/delete/{id}(id=${favorite.property.id})}" method="post">
+            <button type="submit" class="delete-button">Remove</button>
+        </form>
     </div>
 
     <div class="back-link">
