@@ -1,14 +1,10 @@
 package com.hotproperties.hotproperties.service;
 
 import com.hotproperties.hotproperties.entity.Property;
-import com.hotproperties.hotproperties.entity.PropertyImage;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
-import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,12 +12,10 @@ import java.util.Optional;
 public class PropertyServiceImpl implements PropertyService {
 
     private final PropertyRepository propertyRepository;
-    private final PropertyImageRepository propertyImageRepository;
 
     @Autowired
-    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyImageRepository propertyImageRepository) {
+    public PropertyServiceImpl(PropertyRepository propertyRepository) {
         this.propertyRepository = propertyRepository;
-        this.propertyImageRepository = propertyImageRepository;
     }
 
     @Override
@@ -35,57 +29,13 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public void addNewProperty(Property property, MultipartFile[] images) {
+    public void addNewProperty(Property property) {
         validateTitle(property.getTitle());
         validatePrice(property.getPrice());
         validateLocation(property.getLocation());
         validateSize(property.getSize());
 
-        propertyRepository.save(property); // Save first to get ID
-
-        if (images != null) {
-            for (MultipartFile file : images) {
-                if (!file.isEmpty()) {
-                    try {
-                        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                        String uploadDir = "uploads/property-images/";
-                        File dest = new File(uploadDir + fileName);
-                        dest.getParentFile().mkdirs();
-                        file.transferTo(dest);
-
-                        PropertyImage img = new PropertyImage();
-                        img.setFileName(fileName);
-                        img.setProperty(property);
-                        property.addPropertyImage(img);
-                        propertyImageRepository.save(img);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        propertyRepository.save(property); // Save again with images
-    }
-
-    @Override
-    public void updateProperty(Long id, Property property, MultipartFile[] images) {
-
-        Property existing = propertyRepository.findById(id).orElseThrow();
-        existing.setTitle(property.getTitle());
-        existing.setPrice(property.getPrice());
-        existing.setLocation(property.getLocation());
-        existing.setSize(property.getSize());
-        existing.setDescription(property.getDescription());
-        propertyRepository.save(existing);
-    }
-
-    @Override
-    public void deleteImage(Long propertyId, Long imageId) {
-    }
-
-    @Override
-    public void deletePropertyById(Long id) {
-        propertyRepository.deleteById(id);
+        propertyRepository.save(property);
     }
 
     // === VALIDATION METHODS ===

@@ -36,7 +36,11 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-
+    /*
+    @OneToMany(mappedBy = "agent")
+    @JsonIgnore
+    private List<Property> properties = new ArrayList<>();
+     */
 
     public User() {}
 

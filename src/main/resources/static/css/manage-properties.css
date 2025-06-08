@@ -113,13 +113,3 @@ th {
 .back-link a:hover {
     text-decoration: underline;
 }
-
-.action-buttons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.action-buttons form {
-    margin: 0;
-}
