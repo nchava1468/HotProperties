@@ -2,6 +2,7 @@ package com.hotproperties.hotproperties.service;
 
 import com.hotproperties.hotproperties.entity.Role;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.RoleRepository;
 import com.hotproperties.hotproperties.repository.UserRepository;
 import com.hotproperties.hotproperties.util.CurrentUserContext;
@@ -155,37 +156,37 @@ public class UserServiceImpl implements UserService {
 
     private void validateUsername(String username) {
         if (username == null || username.trim().isEmpty() || existsByUsername(username)) {
-            throw new IllegalArgumentException("Username is required and must be unique");
+            throw new InvalidUserParameterException("Username is required and must be unique");
         }
     }
 
     private void validatePassword(String password) {
         if (password == null || password.trim().isEmpty()) {
-            throw new IllegalArgumentException("Password is required");
+            throw new InvalidUserParameterException("Password is required");
         }
     }
 
     private void validateFirstName(String firstName) {
         if (firstName == null || firstName.trim().isEmpty()) {
-            throw new IllegalArgumentException("First name is required");
+            throw new InvalidUserParameterException("First name is required");
         }
     }
 
     private void validateLastName(String lastName) {
         if (lastName == null || lastName.trim().isEmpty()) {
-            throw new IllegalArgumentException("Last name is required");
+            throw new InvalidUserParameterException("Last name is required");
         }
     }
 
     private void validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email is required");
+            throw new InvalidUserParameterException("Email is required");
         }
     }
 
     private void validateRoles(List<String> roles) {
         if (roles == null || roles.size() != 1) {
-            throw new IllegalArgumentException("Exactly one role must be assigned");
+            throw new InvalidUserParameterException("Exactly one role must be assigned");
         }
     }
 }

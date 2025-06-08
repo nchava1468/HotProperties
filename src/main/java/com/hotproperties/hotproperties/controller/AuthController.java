@@ -1,12 +1,17 @@
 package com.hotproperties.hotproperties.controller;
 
+import com.hotproperties.hotproperties.dtos.ApiExceptionDto;
 import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.service.AuthService;
 import com.hotproperties.hotproperties.service.UserService;
 import com.hotproperties.hotproperties.repository.UserRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Controller;
@@ -88,5 +93,28 @@ public class AuthController {
         authService.clearJwtCookie(response);
         redirectAttributes.addFlashAttribute("logoutMessage", "You have successfully logged out.");
         return "redirect:/auth/login";
+    }
+
+    @ExceptionHandler(InvalidUserParameterException.class)
+    public ResponseEntity<?> handleInvalidUserParameterException (InvalidUserParameterException ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleNotFoundException(
+            Exception ex, HttpServletRequest request) {
+        ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                request.getRequestURI(),
+                ex.getClass().getSimpleName()
+        );
+        return new ResponseEntity<>(apiExceptionDto, HttpStatus.BAD_REQUEST);
     }
 }
