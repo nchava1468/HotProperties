@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: url('/images/house-bg.png') no-repeat center center fixed;
+    background-size: cover;
+}
+
+.header {
+    padding: 15px 25px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    height: 50px;
+}
+
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.95);
+    width: 450px;
+    margin: 80px auto;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.nav-links {
+    margin: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #007bff;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.logout-btn {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    padding: 12px 25px;
+    font-size: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}

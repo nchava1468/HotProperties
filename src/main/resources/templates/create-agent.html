@@ -8,7 +8,6 @@
 <body>
 <div class="header">
     <img src="/images/logo.png" alt="HotProperties Logo" class="logo"/>
-    <a th:href="@{/dashboard}" class="dashboard-btn">&#8592; Dashboard</a>
 </div>
 <div class="main-bg">
     <div class="card">
@@ -38,7 +37,6 @@
             
             <div class="form-group">
                 <input type="password" th:field="*{password}" placeholder="Password" required/>
-                <small class="form-text">Password should be at least 6 characters long</small>
             </div>
             
             <button type="submit" class="create-btn">Create Agent</button>

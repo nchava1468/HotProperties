@@ -78,4 +78,6 @@ public class AuthServiceImpl implements AuthService {
         cookie.setSecure(false); // Set to false for local development
         response.addCookie(cookie);
     }
+
 }
+
