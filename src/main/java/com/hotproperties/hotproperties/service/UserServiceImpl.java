@@ -1,11 +1,14 @@
 package com.hotproperties.hotproperties.service;
 
+import com.hotproperties.hotproperties.entity.Favorite;
+import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.Role;
 import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.RoleRepository;
 import com.hotproperties.hotproperties.repository.UserRepository;
 import com.hotproperties.hotproperties.util.CurrentUserContext;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -143,8 +146,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void deleteUserById(Long id) {
-        userRepository.deleteById(id);
+
+        User user = userRepository.findById(id).orElseThrow();
+
+        for (Favorite favorite : user.getFavorites()) {
+            Property property = favorite.getProperty();
+            property.getFavorites().remove(favorite);
+        }
+
+        user.getFavorites().clear();
+        userRepository.delete(user);
     }
 
     @Override

@@ -116,7 +116,7 @@ public class PropertyServiceImpl implements PropertyService {
         property.getFavorites().clear();
         propertyRepository.delete(property);
     }
-    
+
     @Override
     public List<Property> filterProperties(Integer zip, Integer minSqFt, Integer minPrice, Integer maxPrice, String sort) {
 
