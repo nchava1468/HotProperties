@@ -54,7 +54,6 @@ public class AuthServiceImpl implements AuthService {
 
         Cookie jwtCookie = new Cookie("jwt", jwtResponse.getToken());
         jwtCookie.setHttpOnly(true);
-        // jwtCookie.setSecure(true); // Uncomment for HTTPS
         jwtCookie.setPath("/");
         jwtCookie.setMaxAge(60 * 60); // 1 hour
 
@@ -75,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(0);
-        cookie.setSecure(false); // Set to false for local development
+        cookie.setSecure(false);
         response.addCookie(cookie);
     }
 }
