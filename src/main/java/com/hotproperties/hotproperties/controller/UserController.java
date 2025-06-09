@@ -9,6 +9,8 @@ import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.service.PropertyService;
 import com.hotproperties.hotproperties.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Controller
 public class UserController {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
     private final PropertyService propertyService;
@@ -36,10 +39,12 @@ public class UserController {
     @GetMapping("/dashboard")
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String dashboard(Model model, RedirectAttributes redirectAttributes) {
+        log.info("User accessing dashboard");
         try {
             userService.prepareDashboardModel(model);
             return "dashboard";
         } catch (Exception e) {
+            log.error("Error in dashboard: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error loading dashboard: " + e.getMessage());
             return "redirect:/auth/login";
         }
@@ -48,10 +53,12 @@ public class UserController {
     @GetMapping("/users/profile")
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String profile(Model model, RedirectAttributes redirectAttributes) {
+        log.info("User accessing profile");
         try {
             userService.prepareProfileModel(model);
             return "profile";
         } catch (Exception e) {
+            log.error("Error in profile: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error loading profile: " + e.getMessage());
             return "redirect:/auth/login";
         }
@@ -60,6 +67,7 @@ public class UserController {
     @GetMapping("/users/profile/edit")
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     public String editProfile(Model model) {
+        log.info("User accessing edit profile page");
         model.addAttribute("user", new User());
         return "edit-profile";
     }
@@ -71,21 +79,20 @@ public class UserController {
                                   @RequestParam(required = false) String lastName,
                                   @RequestParam(required = false) String email,
                                   RedirectAttributes redirectAttributes) {
+        log.info("User {} attempting to update profile", updatedUser.getEmail());
         try {
             User actualUser = userService.getCurrentUser();
-
             actualUser.setFirstName(updatedUser.getFirstName());
             actualUser.setLastName(updatedUser.getLastName());
             actualUser.setEmail(updatedUser.getEmail());
 
             userService.updateUser(actualUser);
+            log.info("Profile updated successfully for user: {}", actualUser.getEmail());
 
             redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
             return "redirect:/users/profile";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/users/profile/edit";
         } catch (Exception e) {
+            log.error("Error updating profile: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error creating user: " + e.getMessage());
             return "redirect:/users/profile/edit";
         }
@@ -96,10 +103,12 @@ public class UserController {
     @GetMapping("/admin/users")
     @PreAuthorize("hasRole('ADMIN')")
     public String viewAllUsers(Model model, RedirectAttributes redirectAttributes) {
+        log.info("Admin accessing all users view");
         try {
             model.addAttribute("users", userService.getAllUsers());
             return "users";
         } catch (Exception e) {
+            log.error("Error loading users: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error loading users: " + e.getMessage());
             return "redirect:/dashboard";
         }
@@ -109,10 +118,13 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public String deleteUser(@PathVariable Long id,
                              RedirectAttributes redirectAttributes) {
+        log.info("Admin attempting to delete user with ID: {}", id);
         try {
             userService.deleteUserById(id);
+            log.info("User deleted successfully with ID: {}", id);
             redirectAttributes.addFlashAttribute("successMessage", "User deleted successfully");
         } catch (Exception e) {
+            log.error("Error deleting user: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error deleting user: " + e.getMessage());
         }
         return "redirect:/admin/users";
@@ -121,6 +133,7 @@ public class UserController {
     @GetMapping("/admin/create-agent")
     @PreAuthorize("hasRole('ADMIN')")
     public String showCreateAgentForm(Model model) {
+        log.info("Admin accessing create agent form");
         model.addAttribute("agent", new User());
         return "create-agent";
     }
@@ -129,14 +142,14 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public String createAgent(@ModelAttribute("agent") User agent,
                               RedirectAttributes redirectAttributes) {
+        log.info("Admin attempting to create new agent: {}", agent.getEmail());
         try {
             userService.registerNewUser(agent, List.of("ROLE_AGENT"));
+            log.info("Agent created successfully: {}", agent.getEmail());
             redirectAttributes.addFlashAttribute("successMessage", "Agent created successfully!");
             return "redirect:/dashboard";
-        } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/admin/create-agent";
         } catch (Exception e) {
+            log.error("Error creating agent: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Error creating agent: " + e.getMessage());
             return "redirect:/admin/create-agent";
         }
@@ -147,6 +160,7 @@ public class UserController {
     @GetMapping("/agent/listings")
     @PreAuthorize("hasRole('AGENT')")
     public String showAgentListings(Model model) {
+        log.info("Agent accessing property listings");
         List<Property> properties = propertyService.findAllProperties();
         model.addAttribute("properties", properties);
         return "manage-properties";
@@ -155,11 +169,13 @@ public class UserController {
     @GetMapping("/agent/add-property")
     @PreAuthorize("hasRole('AGENT')")
     public String showAddPropertyForm() {
+        log.info("Agent accessing add property form");
         return "add-property";
     }
 
     @ExceptionHandler(InvalidUserParameterException.class)
     public ResponseEntity<?> handleInvalidUserParameterException (InvalidUserParameterException ex, HttpServletRequest request) {
+        log.error("Invalid user parameter: {}", ex.getMessage());
         ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -171,6 +187,7 @@ public class UserController {
 
     @ExceptionHandler(InvalidPropertyParameterException.class)
     public ResponseEntity<?> handleInvalidPropertyParameterException (InvalidPropertyParameterException ex, HttpServletRequest request) {
+        log.error("Invalid property parameter: {}", ex.getMessage());
         ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
@@ -183,6 +200,7 @@ public class UserController {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleNotFoundException(
             Exception ex, HttpServletRequest request) {
+        log.error("Unexpected error: {}", ex.getMessage());
         ApiExceptionDto apiExceptionDto = new ApiExceptionDto(
                 ex.getMessage(),
                 HttpStatus.BAD_REQUEST.value(),
