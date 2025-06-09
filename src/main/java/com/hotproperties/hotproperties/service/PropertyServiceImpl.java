@@ -1,9 +1,6 @@
 package com.hotproperties.hotproperties.service;
 
-import com.hotproperties.hotproperties.entity.Favorite;
-import com.hotproperties.hotproperties.entity.Property;
-import com.hotproperties.hotproperties.entity.PropertyImage;
-import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.entity.*;
 import com.hotproperties.hotproperties.exceptions.InvalidPropertyParameterException;
 import com.hotproperties.hotproperties.repository.PropertyImageRepository;
 import com.hotproperties.hotproperties.repository.PropertyRepository;
@@ -99,7 +96,14 @@ public class PropertyServiceImpl implements PropertyService {
             user.getFavorites().remove(favorite);
         }
 
+        for (Message message : property.getMessages()) {
+            User user = message.getUser();
+            user.getMessages().remove(message);
+        }
+
         property.getFavorites().clear();
+        property.getMessages().clear();
+
         propertyRepository.delete(property);
     }
 

@@ -1,9 +1,6 @@
 package com.hotproperties.hotproperties.service;
 
-import com.hotproperties.hotproperties.entity.Favorite;
-import com.hotproperties.hotproperties.entity.Property;
-import com.hotproperties.hotproperties.entity.Role;
-import com.hotproperties.hotproperties.entity.User;
+import com.hotproperties.hotproperties.entity.*;
 import com.hotproperties.hotproperties.exceptions.InvalidUserParameterException;
 import com.hotproperties.hotproperties.repository.RoleRepository;
 import com.hotproperties.hotproperties.repository.UserRepository;
@@ -93,39 +90,6 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         return userRepository.findAllByOrderByLastNameAsc();
     }
-/*
-    @Override
-    public String storeProfilePicture(Long userId, MultipartFile file) {
-        try {
-            String filename = UUID.randomUUID() + "_" + file.getOriginalFilename();
-
-            // Resolve absolute path relative to the project directory
-            Path uploadPath = Paths.get(System.getProperty("user.dir"), "uploads", "profile-pictures");
-            Files.createDirectories(uploadPath);  // Ensure path exists
-
-            // Locate user and remove previous image (if any)
-            User user = userRepository.findById(userId).orElseThrow();
-
-            if (user.getProfilePicture() != null && !user.getProfilePicture().equals("default.jpg")) {
-                Path oldPath = uploadPath.resolve(user.getProfilePicture());
-                Files.deleteIfExists(oldPath);
-            }
-
-            Path filePath = uploadPath.resolve(filename);
-            file.transferTo(filePath.toFile());
-
-            // Save to user
-            user.setProfilePicture(filename);
-            userRepository.save(user);
-
-            return filename;
-
-        } catch (IOException ex) {
-            System.out.println("Failed to save file: " + ex.getMessage());
-            throw new RuntimeException("Failed to store profile picture", ex);
-        }
-    }
-    */
 
     @Override
     public User getCurrentUser() {
@@ -156,13 +120,24 @@ public class UserServiceImpl implements UserService {
             property.getFavorites().remove(favorite);
         }
 
+        for (Message message : user.getMessages()) {
+            Property property = message.getProperty();
+            property.getMessages().remove(message);
+        }
+
         user.getFavorites().clear();
+        user.getMessages().clear();
+
         userRepository.delete(user);
     }
 
     @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
+    }
+
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 
     // === VALIDATION METHODS ===

@@ -41,6 +41,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Favorite> favorites = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private List<Message> messages = new ArrayList<>();
+
     public User() {}
 
     public User(String username, String password, String firstName, String lastName,
@@ -56,6 +59,11 @@ public class User {
     public void addFavorite(Favorite favorite) {
         favorites.add(favorite);
         favorite.setUser(this);
+    }
+
+    public void addMessage(Message message) {
+        messages.add(message);
+        message.setUser(this);
     }
 
     public Long getId() {
@@ -112,6 +120,14 @@ public class User {
 
     public void setFavorites(List<Favorite> favorites) {
         this.favorites = favorites;
+    }
+
+    public List<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
     }
 }
 
