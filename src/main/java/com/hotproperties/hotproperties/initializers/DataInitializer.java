@@ -43,7 +43,7 @@ public class DataInitializer {
     @PostConstruct
     public void init() {
 
-        // Always create roles if they don't exist
+
 
         if (roleRepository.count() == 0) {
             Role roleBuyer = new Role("ROLE_BUYER");
