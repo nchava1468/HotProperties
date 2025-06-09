@@ -66,4 +66,16 @@ public class MessageController {
         }
     }
 
+    @PostMapping("/messages/delete")
+    @PreAuthorize("hasRole('BUYER')")
+    public String deleteMessage(@RequestParam("id") Long messageId,
+                                RedirectAttributes redirectAttributes) {
+        try {
+            messageService.deleteMessageById(messageId);
+            redirectAttributes.addFlashAttribute("successMessage", "Successfully deleted message.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Could not delete message.");
+        }
+        return "redirect:/messages/buyer";
+    }
 }

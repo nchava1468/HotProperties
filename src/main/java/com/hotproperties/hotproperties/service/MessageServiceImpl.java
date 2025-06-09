@@ -5,6 +5,8 @@ import com.hotproperties.hotproperties.entity.Property;
 import com.hotproperties.hotproperties.entity.User;
 import com.hotproperties.hotproperties.exceptions.InvalidMessageParameterException;
 import com.hotproperties.hotproperties.repository.MessageRepository;
+import com.hotproperties.hotproperties.repository.PropertyRepository;
+import com.hotproperties.hotproperties.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +20,16 @@ public class MessageServiceImpl implements MessageService {
     private final MessageRepository messageRepository;
     private final UserService userService;
     private final PropertyService propertyService;
+    private final UserRepository userRepository;
+    private final PropertyRepository propertyRepository;
 
     @Autowired
-    public MessageServiceImpl(MessageRepository messageRepository, UserService userService, PropertyService propertyService) {
+    public MessageServiceImpl(MessageRepository messageRepository, UserService userService, PropertyService propertyService, UserRepository userRepository, PropertyRepository propertyRepository) {
         this.messageRepository = messageRepository;
         this.userService = userService;
         this.propertyService = propertyService;
+        this.userRepository = userRepository;
+        this.propertyRepository = propertyRepository;
     }
 
     @Override
@@ -51,6 +57,19 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public List<Message> getMessages(User user) {
         return messageRepository.findByUser(user);
+    }
+
+    public void deleteMessageById(Long id) {
+
+        Message message = messageRepository.findById(id).orElseThrow();
+
+        User user = message.getUser();
+        user.getMessages().remove(message);
+
+        Property property = message.getProperty();
+        property.getMessages().remove(message);
+
+        messageRepository.deleteMessageById(id);
     }
 
     // === VALIDATION METHODS ===

@@ -10,4 +10,6 @@ public interface MessageService {
     void sendMessage(String message, User user, Property property);
 
     List<Message> getMessages(User actualUser);
+
+    void deleteMessageById(Long messageId);
 }
