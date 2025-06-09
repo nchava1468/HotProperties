@@ -14,6 +14,8 @@ public interface UserService {
     @PreAuthorize("hasRole('ADMIN')")
     List<User> getAllUsers();
 
+    //String storeProfilePicture(Long userId, MultipartFile file);
+
     User registerNewUser(User user, List<String> roleNames);
 
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
@@ -31,6 +33,4 @@ public interface UserService {
 
     @PreAuthorize("hasAnyRole('BUYER', 'AGENT', 'ADMIN')")
     void prepareProfileModel(Model model);
-
-    User findById(Long id);
 }
