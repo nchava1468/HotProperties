@@ -48,6 +48,19 @@
             </div>
         </div>
     </div>
+
+    <div class="container">
+
+        <h1>Contact the Agent</h1>
+        <h2>Your message:</h2>
+
+        <form th:action="@{/messages/send}" method="post">
+            <textarea name="message" rows="15" cols="80"></textarea>
+            <input type="hidden" name="propertyId" th:value="${property.id}" />
+            <button type="submit" class="dashboard-link">Send Message</button>
+        </form>
+
+    </div>
     <div class="back-link">
         <a th:href="@{/properties/favorites}">&#8592; Back to Favorites</a>
     </div>
